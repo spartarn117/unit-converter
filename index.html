@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>단위 변환기</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+
+      background: linear-gradient(
+        135deg,
+        #ffd6e5,
+        #f7b7cc
+      );
+
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 55px 20px 25px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 38px;
+      color: #8f3657;
+    }
+
+    header p {
+      margin-top: 10px;
+      color: #83556a;
+      font-size: 15px;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 800px;
+      margin: 0 auto 60px;
+    }
+
+    .converter {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 25px;
+      padding: 30px;
+
+      box-shadow:
+        0 15px 40px rgba(130, 60, 90, 0.15);
+
+      backdrop-filter: blur(10px);
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #6d4b59;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 15px;
+
+      border: 1px solid #e8c4d0;
+      border-radius: 12px;
+
+      background: white;
+
+      font-size: 17px;
+      color: #333;
+
+      outline: none;
+      transition: 0.2s;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #db7397;
+
+      box-shadow:
+        0 0 0 3px rgba(219, 115, 151, 0.15);
+    }
+
+    .section {
+      margin-bottom: 23px;
+    }
+
+    .unit-grid {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        60px
+        minmax(0, 1fr);
+
+      gap: 12px;
+
+      align-items: end;
+    }
+
+    .swap-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swap-button {
+      width: 48px;
+      height: 48px;
+
+      border: none;
+      border-radius: 50%;
+
+      background: #dd789a;
+      color: white;
+
+      font-size: 22px;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+    .swap-button:hover {
+      background: #c65c82;
+      transform: rotate(180deg);
+    }
+
+    .result-box {
+      margin-top: 28px;
+
+      padding: 25px 20px;
+
+      border-radius: 18px;
+
+      text-align: center;
+
+      background: linear-gradient(
+        135deg,
+        #fff0f5,
+        #ffe3ed
+      );
+
+      border: 1px solid #f0c7d5;
+    }
+
+    .result-label {
+      font-size: 13px;
+      color: #946479;
+      margin-bottom: 8px;
+    }
+
+    #result {
+      font-size: 30px;
+      font-weight: 700;
+
+      word-break: break-all;
+
+      color: #a83e65;
+    }
+
+    #formula {
+      margin-top: 10px;
+      color: #876370;
+      font-size: 14px;
+    }
+
+    .copy-button {
+      margin-top: 18px;
+
+      padding: 10px 20px;
+
+      border: 1px solid #e0a6bb;
+      border-radius: 10px;
+
+      background: white;
+      color: #a44b6c;
+
+      cursor: pointer;
+    }
+
+    .copy-button:hover {
+      background: #fff7fa;
+    }
+
+    .tips {
+      margin-top: 20px;
+
+      background: rgba(255, 255, 255, 0.55);
+
+      border-radius: 16px;
+
+      padding: 18px 22px;
+
+      color: #76515f;
+
+      font-size: 14px;
+
+      line-height: 1.8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+
+      color: #946477;
+
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+
+      header h1 {
+        font-size: 30px;
+      }
+
+      .converter {
+        padding: 22px;
+      }
+
+      .unit-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .swap-wrapper {
+        margin: -4px 0;
+      }
+
+      .swap-button {
+        transform: rotate(90deg);
+      }
+
+      .swap-button:hover {
+        transform: rotate(270deg);
+      }
+
+      #result {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+<header>
+  <h1>단위 변환기</h1>
+
+  <p>
+    자주 사용하거나 헷갈리는 단위를 빠르게 변환하세요.
+  </p>
+</header>
+
+
+<main class="container">
+
+  <div class="converter">
+
+    <div class="section">
+
+      <label for="category">
+        변환 종류
+      </label>
+
+      <select id="category"></select>
+
+    </div>
+
+
+    <div class="section">
+
+      <label for="inputValue">
+        변환할 값
+      </label>
+
+      <input
+        type="number"
+        id="inputValue"
+        value="1"
+        step="any"
+        placeholder="숫자를 입력하세요"
+      >
+
+    </div>
+
+
+    <div class="unit-grid">
+
+      <div>
+
+        <label for="fromUnit">
+          원래 단위
+        </label>
+
+        <select id="fromUnit"></select>
+
+      </div>
+
+
+      <div class="swap-wrapper">
+
+        <button
+          class="swap-button"
+          id="swapButton"
+          type="button"
+          title="단위 서로 바꾸기"
+        >
+          ⇄
+        </button>
+
+      </div>
+
+
+      <div>
+
+        <label for="toUnit">
+          변환 단위
+        </label>
+
+        <select id="toUnit"></select>
+
+      </div>
+
+    </div>
+
+
+    <div class="result-box">
+
+      <div class="result-label">
+        변환 결과
+      </div>
+
+      <div id="result">
+        -
+      </div>
+
+      <div id="formula"></div>
+
+      <button
+        class="copy-button"
+        id="copyButton"
+        type="button"
+      >
+        결과 복사
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="tips">
+
+    <strong>자주 쓰는 변환</strong><br>
+
+    1 MPa ≈ 145.038 psi<br>
+    1 m/s = 3.6 km/h<br>
+    1 kgf = 9.80665 N<br>
+    1 kgf·m = 9.80665 N·m<br>
+    1 평 ≈ 3.3058 m²<br>
+    1 PS ≈ 735.499 W
+
+  </div>
+
+</main>
+
+
+<footer>
+  Unit Converter
+</footer>
+
+
+<script>
+
+const categories = {
+
+  length: {
+    name: "길이",
+    units: [
+      { name: "밀리미터", symbol: "mm", factor: 0.001 },
+      { name: "센티미터", symbol: "cm", factor: 0.01 },
+      { name: "미터", symbol: "m", factor: 1 },
+      { name: "킬로미터", symbol: "km", factor: 1000 },
+      { name: "인치", symbol: "in", factor: 0.0254 },
+      { name: "피트", symbol: "ft", factor: 0.3048 },
+      { name: "야드", symbol: "yd", factor: 0.9144 },
+      { name: "마일", symbol: "mi", factor: 1609.344 }
+    ],
+    defaultFrom: 0,
+    defaultTo: 2
+  },
+
+
+  area: {
+    name: "면적",
+    units: [
+      { name: "제곱밀리미터", symbol: "mm²", factor: 0.000001 },
+      { name: "제곱센티미터", symbol: "cm²", factor: 0.0001 },
+      { name: "제곱미터", symbol: "m²", factor: 1 },
+      { name: "제곱킬로미터", symbol: "km²", factor: 1000000 },
+      { name: "제곱인치", symbol: "in²", factor: 0.00064516 },
+      { name: "제곱피트", symbol: "ft²", factor: 0.09290304 },
+      { name: "평", symbol: "평", factor: 3.305785123966942 }
+    ],
+    defaultFrom: 2,
+    defaultTo: 6
+  },
+
+
+  volume: {
+    name: "부피",
+    units: [
+      { name: "밀리리터", symbol: "mL", factor: 0.001 },
+      { name: "cc", symbol: "cc", factor: 0.001 },
+      { name: "리터", symbol: "L", factor: 1 },
+      { name: "세제곱미터", symbol: "m³", factor: 1000 },
+      { name: "세제곱인치", symbol: "in³", factor: 0.016387064 },
+      { name: "세제곱피트", symbol: "ft³", factor: 28.316846592 },
+      { name: "미국 갤런", symbol: "US gal", factor: 3.785411784 }
+    ],
+    defaultFrom: 2,
+    defaultTo: 3
+  },
+
+
+  mass: {
+    name: "질량",
+    units: [
+      { name: "밀리그램", symbol: "mg", factor: 0.000001 },
+      { name: "그램", symbol: "g", factor: 0.001 },
+      { name: "킬로그램", symbol: "kg", factor: 1 },
+      { name: "톤", symbol: "t", factor: 1000 },
+      { name: "온스", symbol: "oz", factor: 0.028349523125 },
+      { name: "파운드", symbol: "lb", factor: 0.45359237 }
+    ],
+    defaultFrom: 2,
+    defaultTo: 5
+  },
+
+
+  speed: {
+    name: "속도",
+    units: [
+      { name: "미터/초", symbol: "m/s", factor: 1 },
+      { name: "킬로미터/시", symbol: "km/h", factor: 1 / 3.6 },
+      { name: "마일/시", symbol: "mph", factor: 0.44704 },
+      { name: "노트", symbol: "knot", factor: 0.514444444444 }
+    ],
+    defaultFrom: 0,
+    defaultTo: 1
+  },
+
+
+  pressure: {
+    name: "압력",
+    units: [
+      { name: "파스칼", symbol: "Pa", factor: 1 },
+      { name: "킬로파스칼", symbol: "kPa", factor: 1000 },
+      { name: "메가파스칼", symbol: "MPa", factor: 1000000 },
+      { name: "bar", symbol: "bar", factor: 100000 },
+      { name: "표준대기압", symbol: "atm", factor: 101325 },
+      { name: "psi", symbol: "psi", factor: 6894.757293168 },
+      { name: "수은주 밀리미터", symbol: "mmHg", factor: 133.322387415 },
+      { name: "kgf/cm²", symbol: "kgf/cm²", factor: 98066.5 }
+    ],
+    defaultFrom: 2,
+    defaultTo: 5
+  },
+
+
+  force: {
+    name: "힘",
+    units: [
+      { name: "뉴턴", symbol: "N", factor: 1 },
+      { name: "킬로뉴턴", symbol: "kN", factor: 1000 },
+      { name: "킬로그램힘", symbol: "kgf", factor: 9.80665 },
+      { name: "파운드힘", symbol: "lbf", factor: 4.4482216152605 }
+    ],
+    defaultFrom: 0,
+    defaultTo: 2
+  },
+
+
+  torque: {
+    name: "토크",
+    units: [
+      { name: "뉴턴미터", symbol: "N·m", factor: 1 },
+      { name: "킬로그램힘 미터", symbol: "kgf·m", factor: 9.80665 },
+      { name: "파운드힘 피트", symbol: "lbf·ft", factor: 1.3558179483314 },
+      { name: "파운드힘 인치", symbol: "lbf·in", factor: 0.1129848290276 }
+    ],
+    defaultFrom: 0,
+    defaultTo: 1
+  },
+
+
+  energy: {
+    name: "에너지",
+    units: [
+      { name: "줄", symbol: "J", factor: 1 },
+      { name: "킬로줄", symbol: "kJ", factor: 1000 },
+      { name: "메가줄", symbol: "MJ", factor: 1000000 },
+      { name: "와트시", symbol: "Wh", factor: 3600 },
+      { name: "킬로와트시", symbol: "kWh", factor: 3600000 },
+      { name: "킬로칼로리", symbol: "kcal", factor: 4184 },
+      { name: "BTU", symbol: "BTU", factor: 1055.05585262 }
+    ],
+    defaultFrom: 1,
+    defaultTo: 4
+  },
+
+
+  power: {
+    name: "동력",
+    units: [
+      { name: "와트", symbol: "W", factor: 1 },
+      { name: "킬로와트", symbol: "kW", factor: 1000 },
+      { name: "메가와트", symbol: "MW", factor: 1000000 },
+      { name: "마력", symbol: "hp", factor: 745.699871582 },
+      { name: "미터마력", symbol: "PS", factor: 735.49875 }
+    ],
+    defaultFrom: 1,
+    defaultTo: 4
+  },
+
+
+  frequency: {
+    name: "회전속도 / 각속도",
+    units: [
+      { name: "RPM", symbol: "rpm", factor: 2 * Math.PI / 60 },
+      { name: "라디안/초", symbol: "rad/s", factor: 1 },
+      { name: "회전/초", symbol: "rps", factor: 2 * Math.PI }
+    ],
+    defaultFrom: 0,
+    defaultTo: 1
+  },
+
+
+  flow: {
+    name: "체적유량",
+    units: [
+      { name: "세제곱미터/초", symbol: "m³/s", factor: 1 },
+      { name: "세제곱미터/시", symbol: "m³/h", factor: 1 / 3600 },
+      { name: "리터/초", symbol: "L/s", factor: 0.001 },
+      { name: "리터/분", symbol: "L/min", factor: 0.001 / 60 },
+      { name: "리터/시", symbol: "L/h", factor: 0.001 / 3600 },
+      { name: "CFM", symbol: "ft³/min", factor: 0.028316846592 / 60 }
+    ],
+    defaultFrom: 3,
+    defaultTo: 1
+  },
+
+
+  temperature: {
+    name: "온도",
+    temperature: true,
+    units: [
+      { name: "섭씨", symbol: "°C" },
+      { name: "켈빈", symbol: "K" },
+      { name: "화씨", symbol: "°F" },
+      { name: "랭킨", symbol: "°R" }
+    ],
+    defaultFrom: 0,
+    defaultTo: 2
+  }
+
+};
+
+
+
+const categorySelect =
+  document.getElementById("category");
+
+const inputValue =
+  document.getElementById("inputValue");
+
+const fromUnit =
+  document.getElementById("fromUnit");
+
+const toUnit =
+  document.getElementById("toUnit");
+
+const result =
+  document.getElementById("result");
+
+const formula =
+  document.getElementById("formula");
+
+const swapButton =
+  document.getElementById("swapButton");
+
+const copyButton =
+  document.getElementById("copyButton");
+
+
+
+for (const key in categories) {
+
+  const option =
+    document.createElement("option");
+
+  option.value = key;
+  option.textContent = categories[key].name;
+
+  categorySelect.appendChild(option);
+
+}
+
+
+
+function updateUnits() {
+
+  const category =
+    categories[categorySelect.value];
+
+  fromUnit.innerHTML = "";
+  toUnit.innerHTML = "";
+
+
+  category.units.forEach((unit, index) => {
+
+    const option1 =
+      document.createElement("option");
+
+    option1.value = index;
+
+    option1.textContent =
+      `${unit.name} (${unit.symbol})`;
+
+
+    const option2 =
+      option1.cloneNode(true);
+
+
+    fromUnit.appendChild(option1);
+    toUnit.appendChild(option2);
+
+  });
+
+
+  fromUnit.value =
+    category.defaultFrom;
+
+  toUnit.value =
+    category.defaultTo;
+
+
+  convert();
+
+}
+
+
+
+function normalConvert(
+  value,
+  from,
+  to
+) {
+
+  const baseValue =
+    value * from.factor;
+
+  return baseValue / to.factor;
+
+}
+
+
+
+function temperatureConvert(
+  value,
+  fromSymbol,
+  toSymbol
+) {
+
+  let kelvin;
+
+
+  switch (fromSymbol) {
+
+    case "°C":
+      kelvin = value + 273.15;
+      break;
+
+    case "K":
+      kelvin = value;
+      break;
+
+    case "°F":
+      kelvin =
+        (value - 32) * 5 / 9 + 273.15;
+      break;
+
+    case "°R":
+      kelvin =
+        value * 5 / 9;
+      break;
+
+  }
+
+
+  switch (toSymbol) {
+
+    case "°C":
+      return kelvin - 273.15;
+
+    case "K":
+      return kelvin;
+
+    case "°F":
+      return
+        (kelvin - 273.15) * 9 / 5 + 32;
+
+    case "°R":
+      return kelvin * 9 / 5;
+
+  }
+
+}
+
+
+
+function formatNumber(number) {
+
+  if (!Number.isFinite(number)) {
+    return "-";
+  }
+
+
+  if (number === 0) {
+    return "0";
+  }
+
+
+  const absolute =
+    Math.abs(number);
+
+
+  if (
+    absolute >= 1e12 ||
+    absolute < 1e-7
+  ) {
+
+    return number.toExponential(8);
+
+  }
+
+
+  return new Intl.NumberFormat(
+    "ko-KR",
+    {
+      maximumSignificantDigits: 12
+    }
+  ).format(number);
+
+}
+
+
+
+function convert() {
+
+  const value =
+    parseFloat(inputValue.value);
+
+
+  if (Number.isNaN(value)) {
+
+    result.textContent = "-";
+
+    formula.textContent =
+      "값을 입력하세요.";
+
+    return;
+
+  }
+
+
+  const category =
+    categories[categorySelect.value];
+
+
+  const from =
+    category.units[
+      Number(fromUnit.value)
+    ];
+
+
+  const to =
+    category.units[
+      Number(toUnit.value)
+    ];
+
+
+  let converted;
+
+
+  if (category.temperature) {
+
+    converted =
+      temperatureConvert(
+        value,
+        from.symbol,
+        to.symbol
+      );
+
+  }
+
+  else {
+
+    converted =
+      normalConvert(
+        value,
+        from,
+        to
+      );
+
+  }
+
+
+  const formatted =
+    formatNumber(converted);
+
+
+  result.textContent =
+    `${formatted} ${to.symbol}`;
+
+
+  formula.textContent =
+    `${value} ${from.symbol} = ${formatted} ${to.symbol}`;
+
+}
+
+
+
+function swapUnits() {
+
+  const previousFrom =
+    fromUnit.value;
+
+  fromUnit.value =
+    toUnit.value;
+
+  toUnit.value =
+    previousFrom;
+
+
+  convert();
+
+}
+
+
+
+async function copyResult() {
+
+  const text =
+    result.textContent;
+
+
+  if (text === "-") {
+    return;
+  }
+
+
+  try {
+
+    await navigator.clipboard.writeText(text);
+
+    copyButton.textContent =
+      "복사 완료 ✓";
+
+
+    setTimeout(() => {
+
+      copyButton.textContent =
+        "결과 복사";
+
+    }, 1200);
+
+  }
+
+  catch {
+
+    copyButton.textContent =
+      "복사 실패";
+
+  }
+
+}
+
+
+
+categorySelect.addEventListener(
+  "change",
+  updateUnits
+);
+
+
+inputValue.addEventListener(
+  "input",
+  convert
+);
+
+
+fromUnit.addEventListener(
+  "change",
+  convert
+);
+
+
+toUnit.addEventListener(
+  "change",
+  convert
+);
+
+
+swapButton.addEventListener(
+  "click",
+  swapUnits
+);
+
+
+copyButton.addEventListener(
+  "click",
+  copyResult
+);
+
+
+
+categorySelect.value =
+  "length";
+
+updateUnits();
+
+</script>
+
+</body>
+</html>
