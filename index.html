@@ -1,566 +1,1141 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 
-  <meta name="theme-color" content="#5b8731">
+<title>Unit Converter</title>
 
-  <title>Block Unit Converter</title>
+<style>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+/* =========================================================
+   기본 설정
+========================================================= */
 
-    html {
-      -webkit-text-size-adjust: 100%;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      min-height: 100dvh;
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
-      font-family:
-        "Courier New",
-        Consolas,
-        monospace;
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
 
-      color: #222;
+  font-family:
+    Arial,
+    "Noto Sans KR",
+    sans-serif;
 
-      /*
-        잔디 + 흙 느낌의 CSS 배경
-      */
-      background:
-        linear-gradient(
-          to bottom,
-          #7ab64a 0,
-          #7ab64a 55px,
-          #628f3c 55px,
-          #628f3c 80px,
-          #795438 80px,
-          #60402d 100%
-        );
+  transition:
+    background 0.5s ease,
+    color 0.4s ease;
 
-      background-attachment: fixed;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-    }
+  overflow-x: hidden;
+}
 
 
-    /* =========================
-       상단 타이틀
-    ========================= */
+/* =========================================================
+   공통 CSS 변수
+========================================================= */
 
-    header {
-      text-align: center;
+body {
+  --background: #222;
+  --panel: #bbb;
+  --panel2: #999;
 
-      padding:
-        calc(38px + env(safe-area-inset-top))
-        16px
-        25px;
-    }
+  --text: #222;
+  --subtext: #555;
 
-    h1 {
-      margin: 0;
+  --accent: #62b34b;
+  --accent2: #39862b;
 
-      color: #fff;
+  --input-bg: #222;
+  --input-text: white;
 
-      font-size: clamp(28px, 6vw, 46px);
+  --result-bg: #111;
+  --result-text: #55ff55;
 
-      font-weight: 900;
+  --border-light: white;
+  --border-dark: #222;
 
-      letter-spacing: 1px;
+  --shadow: rgba(0,0,0,.5);
 
-      text-shadow:
-        3px 3px 0 #222,
-        -2px 0 0 #222,
-        0 -2px 0 #222,
-        2px 0 0 #222,
-        0 2px 0 #222,
-        5px 5px 0 rgba(0,0,0,0.35);
-    }
+  --title-color: white;
+  --title-shadow: #222;
 
-    .subtitle {
-      display: inline-block;
+  --radius: 0px;
 
-      margin-top: 15px;
-      padding: 7px 12px;
+  --title-spacing: 1px;
+}
 
-      background: rgba(0, 0, 0, 0.55);
 
-      color: #f3f3f3;
+/* =========================================================
+   MINECRAFT 풍 테마
+========================================================= */
 
-      border: 2px solid #222;
+body.minecraft {
 
-      font-size: 13px;
+  --panel: #c5c5c5;
+  --panel2: #919191;
 
-      box-shadow:
-        3px 3px 0 rgba(0,0,0,0.4);
-    }
+  --text: #242424;
+  --subtext: #444;
 
+  --accent: #6aaf45;
+  --accent2: #477c30;
 
-    /* =========================
-       전체 영역
-    ========================= */
+  --input-bg: #202020;
+  --input-text: #ffffff;
 
-    .container {
-      width: min(94%, 820px);
+  --result-bg: #171717;
+  --result-text: #55ff55;
 
-      margin: 0 auto;
+  --border-light: #eeeeee;
+  --border-dark: #252525;
 
-      padding-bottom:
-        calc(45px + env(safe-area-inset-bottom));
-    }
+  --title-color: #dddddd;
+  --title-shadow: #252525;
 
+  --radius: 0px;
 
-    /* =========================
-       메인 블록
-    ========================= */
+  background:
+    linear-gradient(
+      rgba(0,0,0,.24),
+      rgba(0,0,0,.24)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      #6c4932 0px,
+      #6c4932 32px,
+      #765039 32px,
+      #765039 64px
+    );
+}
 
-    .converter {
-      padding: 25px;
 
-      background:
-        linear-gradient(
-          135deg,
-          #c6c6c6,
-          #a9a9a9
-        );
+/* 잔디 상단 효과 */
 
-      border:
-        4px solid #222;
+body.minecraft::before {
+  content: "";
 
-      border-top-color: #eee;
-      border-left-color: #eee;
+  position: fixed;
+  z-index: -1;
 
-      box-shadow:
-        7px 7px 0 rgba(0, 0, 0, 0.55);
-    }
+  top: 0;
+  left: 0;
+  right: 0;
 
+  height: 180px;
 
-    /* =========================
-       섹션 제목
-    ========================= */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #649e3a 0px,
+      #649e3a 38px,
+      #75ae44 38px,
+      #75ae44 76px
+    );
 
-    .section {
-      margin-bottom: 22px;
-    }
+  box-shadow:
+    0 15px 0 #4b762e;
+}
 
-    label {
-      display: block;
 
-      margin-bottom: 8px;
+/* =========================================================
+   OVERWATCH 풍 테마
+========================================================= */
 
-      font-weight: 900;
+body.overwatch {
 
-      font-size: 14px;
+  --panel: rgba(244,247,249,.95);
+  --panel2: #dde3e8;
 
-      color: #252525;
+  --text: #28313b;
+  --subtext: #63707b;
 
-      text-shadow:
-        1px 1px 0 #eee;
-    }
+  --accent: #f39c24;
+  --accent2: #d97a00;
 
+  --input-bg: #343d47;
+  --input-text: #ffffff;
 
-    /* =========================
-       입력창 / 선택창
-    ========================= */
+  --result-bg: #242c34;
+  --result-text: #ffad32;
 
-    select,
-    input {
-      width: 100%;
+  --border-light: #ffffff;
+  --border-dark: #7b858e;
 
-      min-height: 52px;
+  --title-color: #f3f5f6;
+  --title-shadow: #343b42;
 
-      padding: 12px 13px;
+  --radius: 4px;
 
-      font-family:
-        "Courier New",
-        Consolas,
-        monospace;
+  background:
+    radial-gradient(
+      circle at 50% 10%,
+      #d8e0e5 0%,
+      #8997a2 35%,
+      #323a43 100%
+    );
+}
 
-      font-size: 17px;
 
-      font-weight: bold;
+/* 오버워치풍 기하학 배경 */
 
-      color: #fff;
+body.overwatch::before {
 
-      background: #222;
+  content: "";
 
-      border: 4px solid #555;
+  position: fixed;
 
-      border-top-color: #111;
-      border-left-color: #111;
-      border-right-color: #aaa;
-      border-bottom-color: #aaa;
+  inset: 0;
 
-      border-radius: 0;
+  z-index: -1;
 
-      outline: none;
-    }
+  opacity: .25;
 
-    select:focus,
-    input:focus {
-      border-color: #a8e063;
+  background:
 
-      box-shadow:
-        0 0 0 3px rgba(168, 224, 99, 0.35);
-    }
+    linear-gradient(
+      115deg,
+      transparent 40%,
+      rgba(255,255,255,.25) 40%,
+      rgba(255,255,255,.25) 41%,
+      transparent 41%
+    ),
 
-    input::placeholder {
-      color: #aaa;
-    }
+    linear-gradient(
+      65deg,
+      transparent 55%,
+      rgba(255,160,30,.24) 55%,
+      rgba(255,160,30,.24) 56%,
+      transparent 56%
+    );
+}
 
 
-    /* =========================
-       단위 선택 영역
-    ========================= */
+/* =========================================================
+   STARCRAFT 풍 테마
+========================================================= */
 
-    .unit-grid {
-      display: grid;
+body.starcraft {
 
-      grid-template-columns:
-        minmax(0, 1fr)
-        70px
-        minmax(0, 1fr);
+  --panel: rgba(10,25,38,.94);
+  --panel2: rgba(18,44,62,.95);
 
-      gap: 12px;
+  --text: #c9efff;
+  --subtext: #6fa8c0;
 
-      align-items: end;
-    }
+  --accent: #40ceff;
+  --accent2: #127aaf;
 
-    .swap-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  --input-bg: #07111b;
+  --input-text: #d4f3ff;
 
+  --result-bg: #02090e;
+  --result-text: #72e5ff;
 
-    /* =========================
-       마인크래프트 버튼 느낌
-    ========================= */
+  --border-light: #3bc8ff;
+  --border-dark: #09151f;
 
-    .mc-button {
-      font-family:
-        "Courier New",
-        Consolas,
-        monospace;
+  --title-color: #b6edff;
+  --title-shadow: #087aa7;
 
-      font-weight: 900;
+  --radius: 2px;
 
-      cursor: pointer;
+  background:
 
-      border: 4px solid;
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(20,97,142,.35),
+      transparent 30%
+    ),
 
-      border-top-color: #ddd;
-      border-left-color: #ddd;
-      border-right-color: #333;
-      border-bottom-color: #333;
+    radial-gradient(
+      circle at 80% 60%,
+      rgba(0,156,218,.15),
+      transparent 30%
+    ),
 
-      background: #777;
+    linear-gradient(
+      145deg,
+      #020407,
+      #06131e 55%,
+      #010306
+    );
+}
 
-      color: white;
 
-      text-shadow:
-        2px 2px 0 #222;
+/* 우주 별 효과 */
 
-      box-shadow:
-        3px 3px 0 rgba(0,0,0,0.45);
+body.starcraft::before {
 
-      border-radius: 0;
+  content: "";
 
-      -webkit-tap-highlight-color:
-        transparent;
-    }
+  position: fixed;
 
-    .mc-button:hover {
-      background: #8a8a8a;
-    }
+  inset: 0;
 
-    .mc-button:active {
-      transform: translate(2px, 2px);
+  z-index: -1;
 
-      box-shadow:
-        1px 1px 0 rgba(0,0,0,0.45);
-    }
+  opacity: .7;
 
+  background-image:
 
-    .swap-button {
-      width: 54px;
-      height: 54px;
+    radial-gradient(
+      white 1px,
+      transparent 1px
+    ),
 
-      font-size: 24px;
-    }
+    radial-gradient(
+      #69dfff 1px,
+      transparent 1px
+    );
 
+  background-size:
+    91px 91px,
+    137px 137px;
 
-    /* =========================
-       결과창
-    ========================= */
+  background-position:
+    10px 10px,
+    55px 80px;
+}
 
-    .result-box {
-      margin-top: 28px;
 
-      padding: 24px 18px;
+/* =========================================================
+   상단
+========================================================= */
 
-      text-align: center;
+header {
 
-      background: #1b1b1b;
+  position: relative;
 
-      border: 5px solid;
+  text-align: center;
 
-      border-top-color: #111;
-      border-left-color: #111;
-      border-right-color: #777;
-      border-bottom-color: #777;
+  padding:
+    calc(55px + env(safe-area-inset-top))
+    20px
+    30px;
+}
 
-      color: white;
-    }
 
-    .result-label {
-      margin-bottom: 10px;
+/* =========================================================
+   메인 타이틀
+========================================================= */
 
-      color: #aaa;
+.main-title {
 
-      font-size: 13px;
+  margin: 0;
 
-      font-weight: bold;
-    }
+  font-size:
+    clamp(38px, 8vw, 76px);
 
-    #result {
-      color: #55ff55;
+  font-weight: 900;
 
-      font-size:
-        clamp(27px, 6vw, 38px);
+  line-height: .95;
 
-      line-height: 1.3;
+  letter-spacing:
+    var(--title-spacing);
 
-      font-weight: 900;
+  color:
+    var(--title-color);
 
-      word-break: break-word;
+  transition:
+    all .4s ease;
+}
 
-      text-shadow:
-        2px 2px 0 #154515;
-    }
 
-    #formula {
-      min-height: 20px;
+/* Minecraft 타이틀 */
 
-      margin-top: 12px;
+.minecraft .main-title {
 
-      color: #e0e0e0;
+  font-family:
+    Impact,
+    "Arial Black",
+    sans-serif;
 
-      font-size: 14px;
+  letter-spacing: 2px;
 
-      line-height: 1.5;
+  transform:
+    scaleY(1.12);
 
-      word-break: break-word;
-    }
+  text-shadow:
 
-    .copy-button {
-      min-height: 46px;
+    0 3px 0 #aaa,
+    0 6px 0 #777,
+    0 9px 0 #444,
 
-      margin-top: 20px;
+    4px 12px 0 #1b1b1b,
 
-      padding: 9px 22px;
+    -2px -2px 0 #252525,
+    2px -2px 0 #252525,
+    -2px 2px 0 #252525,
+    2px 2px 0 #252525;
+}
 
-      font-size: 14px;
-    }
 
+/* Overwatch 타이틀 */
 
-    /* =========================
-       인벤토리 느낌 참고 영역
-    ========================= */
+.overwatch .main-title {
 
-    .tips {
-      margin-top: 25px;
+  font-family:
+    "Arial Narrow",
+    Arial,
+    sans-serif;
 
-      padding: 20px;
+  font-style: italic;
 
-      background: #c6c6c6;
+  letter-spacing: 5px;
 
-      border: 4px solid #222;
+  text-shadow:
+    0 3px 0 #6a737a,
+    0 6px 12px rgba(0,0,0,.5);
+}
 
-      border-top-color: #eee;
-      border-left-color: #eee;
 
-      box-shadow:
-        6px 6px 0 rgba(0,0,0,0.45);
-    }
+/* 오렌지 바 */
 
-    .tips-title {
-      margin-bottom: 13px;
+.overwatch .main-title::after {
 
-      font-size: 15px;
+  content: "";
 
-      font-weight: 900;
+  display: block;
 
-      color: #333;
-    }
+  width: 85px;
+  height: 7px;
 
-    .inventory {
-      display: grid;
+  margin:
+    17px auto 0;
 
-      grid-template-columns:
-        repeat(3, 1fr);
+  background:
+    #f39c24;
 
-      gap: 7px;
-    }
+  transform:
+    skewX(-28deg);
+}
 
-    .slot {
-      min-height: 70px;
 
-      display: flex;
+/* StarCraft 타이틀 */
 
-      align-items: center;
+.starcraft .main-title {
 
-      justify-content: center;
+  font-family:
+    "Arial Narrow",
+    Impact,
+    sans-serif;
 
-      text-align: center;
+  font-style: italic;
 
-      padding: 8px;
+  letter-spacing: 7px;
 
-      color: #222;
+  color: #c5efff;
 
-      font-size: 12px;
+  text-shadow:
 
-      font-weight: bold;
+    0 0 4px #fff,
 
-      background: #8b8b8b;
+    0 0 10px #43d5ff,
 
-      border: 4px solid;
+    0 0 25px #008bd0,
 
-      border-top-color: #373737;
-      border-left-color: #373737;
-      border-right-color: #fff;
-      border-bottom-color: #fff;
-    }
+    3px 4px 0 #06101a;
+}
 
 
-    /* =========================
-       바닥
-    ========================= */
+/* =========================================================
+   부제목
+========================================================= */
 
-    footer {
-      text-align: center;
+.subtitle {
 
-      padding: 28px 10px 5px;
+  display: inline-block;
 
-      color: white;
+  margin-top: 20px;
 
-      font-size: 11px;
+  padding:
+    7px 15px;
 
-      font-weight: bold;
+  font-size: 12px;
 
-      text-shadow:
-        2px 2px 0 #222;
-    }
+  font-weight: 700;
 
+  letter-spacing: 3px;
 
-    /* =========================
-       모바일
-    ========================= */
+  color:
+    var(--title-color);
+}
 
-    @media (max-width: 640px) {
 
-      header {
-        padding-top:
-          calc(25px + env(safe-area-inset-top));
+/* =========================================================
+   테마 버튼
+========================================================= */
 
-        padding-bottom: 18px;
-      }
+.theme-control {
 
-      .container {
-        width: calc(100% - 20px);
-      }
+  position: fixed;
 
-      .converter {
-        padding: 18px 13px;
+  z-index: 100;
 
-        border-width: 3px;
+  top:
+    calc(15px + env(safe-area-inset-top));
 
-        box-shadow:
-          5px 5px 0 rgba(0,0,0,0.5);
-      }
+  right: 15px;
+}
 
-      .unit-grid {
-        grid-template-columns: 1fr;
 
-        gap: 11px;
-      }
+.theme-button {
 
-      .swap-wrapper {
-        height: 48px;
-      }
+  min-height: 44px;
 
-      .swap-button {
-        width: 100%;
+  padding:
+    8px 14px;
 
-        max-width: 150px;
+  font-weight: 900;
 
-        height: 44px;
-      }
+  letter-spacing: 1px;
 
-      .result-box {
-        margin-top: 22px;
+  cursor: pointer;
 
-        padding: 22px 11px;
-      }
+  color:
+    var(--input-text);
 
-      .copy-button {
-        width: 100%;
+  background:
+    var(--input-bg);
 
-        min-height: 49px;
-      }
+  border:
+    2px solid
+    var(--accent);
 
-      .inventory {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
+  border-radius:
+    var(--radius);
 
-      .slot {
-        min-height: 65px;
-      }
-    }
+  box-shadow:
+    3px 3px 0
+    var(--shadow);
 
+  transition:
+    .2s;
+}
 
-    @media (max-width: 360px) {
 
-      .container {
-        width: calc(100% - 12px);
-      }
+.theme-button:hover {
 
-      select,
-      input {
-        font-size: 16px;
-      }
+  color:
+    var(--accent);
+}
 
-      .converter {
-        padding: 15px 10px;
-      }
 
-      .inventory {
-        grid-template-columns: 1fr;
-      }
-    }
+.theme-button:active {
 
-  </style>
+  transform:
+    translate(2px,2px);
+}
+
+
+/* =========================================================
+   메인 영역
+========================================================= */
+
+.container {
+
+  width:
+    min(94%, 820px);
+
+  margin:
+    0 auto;
+
+  padding-bottom:
+    50px;
+}
+
+
+/* =========================================================
+   패널
+========================================================= */
+
+.converter {
+
+  padding:
+    28px;
+
+  color:
+    var(--text);
+
+  background:
+    var(--panel);
+
+  border:
+    3px solid
+    var(--border-dark);
+
+  border-top-color:
+    var(--border-light);
+
+  border-left-color:
+    var(--border-light);
+
+  border-radius:
+    var(--radius);
+
+  box-shadow:
+    9px 10px 0
+    var(--shadow);
+
+  transition:
+    all .4s ease;
+}
+
+
+/* StarCraft 금속 효과 */
+
+.starcraft .converter {
+
+  border-color:
+    #237797;
+
+  box-shadow:
+
+    0 0 15px
+    rgba(42,194,255,.35),
+
+    8px 10px 0
+    rgba(0,0,0,.7);
+}
+
+
+/* Overwatch 각진 패널 */
+
+.overwatch .converter {
+
+  clip-path:
+    polygon(
+      22px 0,
+      100% 0,
+      100% calc(100% - 22px),
+      calc(100% - 22px) 100%,
+      0 100%,
+      0 22px
+    );
+}
+
+
+/* =========================================================
+   폼
+========================================================= */
+
+.section {
+
+  margin-bottom:
+    23px;
+}
+
+
+label {
+
+  display:
+    block;
+
+  margin-bottom:
+    8px;
+
+  font-size:
+    13px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .5px;
+
+  color:
+    var(--text);
+}
+
+
+select,
+input {
+
+  width:
+    100%;
+
+  min-height:
+    53px;
+
+  padding:
+    12px 14px;
+
+  background:
+    var(--input-bg);
+
+  color:
+    var(--input-text);
+
+  border:
+    2px solid
+    var(--border-dark);
+
+  border-radius:
+    var(--radius);
+
+  font-size:
+    17px;
+
+  font-weight:
+    600;
+
+  outline:
+    none;
+
+  transition:
+    .2s;
+}
+
+
+select:focus,
+input:focus {
+
+  border-color:
+    var(--accent);
+
+  box-shadow:
+    0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--accent) 25%,
+      transparent
+    );
+}
+
+
+/* =========================================================
+   단위 선택
+========================================================= */
+
+.unit-grid {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    70px
+    minmax(0,1fr);
+
+  gap:
+    13px;
+
+  align-items:
+    end;
+}
+
+
+.swap-wrapper {
+
+  display:
+    flex;
+
+  justify-content:
+    center;
+}
+
+
+.swap-button {
+
+  width:
+    55px;
+
+  height:
+    55px;
+
+  cursor:
+    pointer;
+
+  font-size:
+    23px;
+
+  font-weight:
+    900;
+
+  color:
+    white;
+
+  background:
+    var(--accent);
+
+  border:
+    3px solid
+    var(--accent2);
+
+  border-radius:
+    var(--radius);
+
+  box-shadow:
+    3px 4px 0
+    var(--shadow);
+
+  transition:
+    .15s;
+}
+
+
+.swap-button:hover {
+
+  filter:
+    brightness(1.15);
+}
+
+
+.swap-button:active {
+
+  transform:
+    translate(2px,2px);
+
+  box-shadow:
+    1px 1px 0
+    var(--shadow);
+}
+
+
+/* =========================================================
+   결과
+========================================================= */
+
+.result-box {
+
+  margin-top:
+    30px;
+
+  padding:
+    27px 18px;
+
+  text-align:
+    center;
+
+  background:
+    var(--result-bg);
+
+  border:
+    3px solid
+    var(--accent2);
+
+  border-radius:
+    var(--radius);
+
+  box-shadow:
+    inset 0 0 15px
+    rgba(0,0,0,.35);
+}
+
+
+.starcraft .result-box {
+
+  box-shadow:
+
+    inset 0 0 25px
+    rgba(0,140,210,.25),
+
+    0 0 10px
+    rgba(50,205,255,.25);
+}
+
+
+.result-label {
+
+  margin-bottom:
+    9px;
+
+  color:
+    var(--subtext);
+
+  font-size:
+    12px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    2px;
+}
+
+
+#result {
+
+  color:
+    var(--result-text);
+
+  font-size:
+    clamp(27px,6vw,38px);
+
+  font-weight:
+    900;
+
+  word-break:
+    break-word;
+}
+
+
+.starcraft #result {
+
+  text-shadow:
+    0 0 10px #2ecbff;
+}
+
+
+#formula {
+
+  margin-top:
+    12px;
+
+  color:
+    #aaa;
+
+  font-size:
+    14px;
+
+  min-height:
+    20px;
+}
+
+
+.copy-button {
+
+  min-height:
+    45px;
+
+  margin-top:
+    19px;
+
+  padding:
+    9px 22px;
+
+  cursor:
+    pointer;
+
+  font-weight:
+    800;
+
+  color:
+    white;
+
+  background:
+    var(--accent);
+
+  border:
+    2px solid
+    var(--accent2);
+
+  border-radius:
+    var(--radius);
+}
+
+
+/* =========================================================
+   현재 테마 표시
+========================================================= */
+
+.theme-name {
+
+  margin-top:
+    15px;
+
+  text-align:
+    center;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    2px;
+
+  color:
+    var(--subtext);
+}
+
+
+/* =========================================================
+   모바일
+========================================================= */
+
+@media (max-width: 640px) {
+
+  header {
+
+    padding-top:
+      calc(
+        75px +
+        env(safe-area-inset-top)
+      );
+
+    padding-bottom:
+      22px;
+  }
+
+
+  .theme-control {
+
+    top:
+      calc(
+        10px +
+        env(safe-area-inset-top)
+      );
+
+    right:
+      10px;
+  }
+
+
+  .theme-button {
+
+    min-height:
+      40px;
+
+    font-size:
+      11px;
+  }
+
+
+  .container {
+
+    width:
+      calc(100% - 18px);
+  }
+
+
+  .converter {
+
+    padding:
+      19px 13px;
+
+    box-shadow:
+      5px 6px 0
+      var(--shadow);
+  }
+
+
+  .unit-grid {
+
+    grid-template-columns:
+      1fr;
+
+    gap:
+      11px;
+  }
+
+
+  .swap-wrapper {
+
+    height:
+      47px;
+  }
+
+
+  .swap-button {
+
+    width:
+      100%;
+
+    max-width:
+      160px;
+
+    height:
+      43px;
+  }
+
+
+  .result-box {
+
+    margin-top:
+      22px;
+  }
+
+
+  .copy-button {
+
+    width:
+      100%;
+
+    min-height:
+      48px;
+  }
+
+
+  .minecraft .main-title {
+
+    font-size:
+      41px;
+  }
+
+
+  .overwatch .main-title {
+
+    letter-spacing:
+      2px;
+  }
+
+
+  .starcraft .main-title {
+
+    letter-spacing:
+      3px;
+  }
+
+}
+
+</style>
 </head>
 
 
-<body>
+<body class="minecraft">
+
+
+<!-- =====================================================
+     테마 전환
+===================================================== -->
+
+<div class="theme-control">
+
+  <button
+    class="theme-button"
+    id="themeButton"
+    type="button"
+  >
+    THEME ▶
+  </button>
+
+</div>
+
+
+<!-- =====================================================
+     상단
+===================================================== -->
 
 <header>
 
-  <h1>UNIT CONVERTER</h1>
+  <h1
+    class="main-title"
+    id="mainTitle"
+  >
+    UNIT CONVERTER
+  </h1>
 
-  <div class="subtitle">
+  <div
+    class="subtitle"
+    id="subtitle"
+  >
     BLOCK ENGINEERING TOOL
   </div>
 
@@ -574,8 +1149,8 @@
 
     <div class="section">
 
-      <label for="category">
-        ▶ 변환 종류
+      <label>
+        변환 종류
       </label>
 
       <select id="category"></select>
@@ -585,18 +1160,16 @@
 
     <div class="section">
 
-      <label for="inputValue">
-        ▶ 변환할 값
+      <label>
+        변환할 값
       </label>
 
       <input
-        type="number"
         id="inputValue"
+        type="number"
         value="1"
         step="any"
         inputmode="decimal"
-        autocomplete="off"
-        placeholder="숫자를 입력하세요"
       >
 
     </div>
@@ -606,8 +1179,8 @@
 
       <div>
 
-        <label for="fromUnit">
-          ▶ 원래 단위
+        <label>
+          원래 단위
         </label>
 
         <select id="fromUnit"></select>
@@ -618,10 +1191,9 @@
       <div class="swap-wrapper">
 
         <button
-          class="swap-button mc-button"
           id="swapButton"
+          class="swap-button"
           type="button"
-          aria-label="단위 서로 바꾸기"
         >
           ⇄
         </button>
@@ -631,8 +1203,8 @@
 
       <div>
 
-        <label for="toUnit">
-          ▶ 변환 단위
+        <label>
+          변환 단위
         </label>
 
         <select id="toUnit"></select>
@@ -645,7 +1217,7 @@
     <div class="result-box">
 
       <div class="result-label">
-        [ 변환 결과 ]
+        CONVERSION RESULT
       </div>
 
       <div id="result">
@@ -654,9 +1226,10 @@
 
       <div id="formula"></div>
 
+
       <button
-        class="copy-button mc-button"
         id="copyButton"
+        class="copy-button"
         type="button"
       >
         결과 복사
@@ -664,285 +1237,620 @@
 
     </div>
 
-  </div>
 
-
-  <div class="tips">
-
-    <div class="tips-title">
-      자주 쓰는 단위
-    </div>
-
-    <div class="inventory">
-
-      <div class="slot">
-        1 MPa<br>
-        ≈ 145.038 psi
-      </div>
-
-      <div class="slot">
-        1 m/s<br>
-        = 3.6 km/h
-      </div>
-
-      <div class="slot">
-        1 kgf<br>
-        = 9.80665 N
-      </div>
-
-      <div class="slot">
-        1 kgf·m<br>
-        = 9.80665 N·m
-      </div>
-
-      <div class="slot">
-        1 평<br>
-        ≈ 3.3058 m²
-      </div>
-
-      <div class="slot">
-        1 PS<br>
-        ≈ 735.499 W
-      </div>
-
+    <div
+      class="theme-name"
+      id="themeName"
+    >
+      MINECRAFT STYLE
     </div>
 
   </div>
-
-
-  <footer>
-    BLOCK UNIT CONVERTER
-  </footer>
 
 </main>
 
 
+
 <script>
+
+/* =========================================================
+   단위 데이터
+========================================================= */
 
 const categories = {
 
   length: {
+
     name: "길이",
+
     units: [
-      { name: "밀리미터", symbol: "mm", factor: 0.001 },
-      { name: "센티미터", symbol: "cm", factor: 0.01 },
-      { name: "미터", symbol: "m", factor: 1 },
-      { name: "킬로미터", symbol: "km", factor: 1000 },
-      { name: "인치", symbol: "in", factor: 0.0254 },
-      { name: "피트", symbol: "ft", factor: 0.3048 },
-      { name: "야드", symbol: "yd", factor: 0.9144 },
-      { name: "마일", symbol: "mi", factor: 1609.344 }
+
+      {
+        name: "밀리미터",
+        symbol: "mm",
+        factor: 0.001
+      },
+
+      {
+        name: "센티미터",
+        symbol: "cm",
+        factor: 0.01
+      },
+
+      {
+        name: "미터",
+        symbol: "m",
+        factor: 1
+      },
+
+      {
+        name: "킬로미터",
+        symbol: "km",
+        factor: 1000
+      },
+
+      {
+        name: "인치",
+        symbol: "in",
+        factor: 0.0254
+      },
+
+      {
+        name: "피트",
+        symbol: "ft",
+        factor: 0.3048
+      },
+
+      {
+        name: "야드",
+        symbol: "yd",
+        factor: 0.9144
+      },
+
+      {
+        name: "마일",
+        symbol: "mi",
+        factor: 1609.344
+      }
+
     ],
+
     defaultFrom: 0,
     defaultTo: 2
   },
 
 
   area: {
+
     name: "면적",
+
     units: [
-      { name: "제곱밀리미터", symbol: "mm²", factor: 0.000001 },
-      { name: "제곱센티미터", symbol: "cm²", factor: 0.0001 },
-      { name: "제곱미터", symbol: "m²", factor: 1 },
-      { name: "제곱킬로미터", symbol: "km²", factor: 1000000 },
-      { name: "제곱인치", symbol: "in²", factor: 0.00064516 },
-      { name: "제곱피트", symbol: "ft²", factor: 0.09290304 },
-      { name: "평", symbol: "평", factor: 3.305785123966942 }
+
+      {
+        name: "제곱밀리미터",
+        symbol: "mm²",
+        factor: 0.000001
+      },
+
+      {
+        name: "제곱센티미터",
+        symbol: "cm²",
+        factor: 0.0001
+      },
+
+      {
+        name: "제곱미터",
+        symbol: "m²",
+        factor: 1
+      },
+
+      {
+        name: "제곱킬로미터",
+        symbol: "km²",
+        factor: 1000000
+      },
+
+      {
+        name: "제곱인치",
+        symbol: "in²",
+        factor: 0.00064516
+      },
+
+      {
+        name: "제곱피트",
+        symbol: "ft²",
+        factor: 0.09290304
+      },
+
+      {
+        name: "평",
+        symbol: "평",
+        factor: 3.305785123966942
+      }
+
     ],
+
     defaultFrom: 2,
     defaultTo: 6
   },
 
 
   volume: {
+
     name: "부피",
+
     units: [
-      { name: "밀리리터", symbol: "mL", factor: 0.001 },
-      { name: "cc", symbol: "cc", factor: 0.001 },
-      { name: "리터", symbol: "L", factor: 1 },
-      { name: "세제곱미터", symbol: "m³", factor: 1000 },
-      { name: "세제곱인치", symbol: "in³", factor: 0.016387064 },
-      { name: "세제곱피트", symbol: "ft³", factor: 28.316846592 },
-      { name: "미국 갤런", symbol: "US gal", factor: 3.785411784 }
+
+      {
+        name: "밀리리터",
+        symbol: "mL",
+        factor: 0.001
+      },
+
+      {
+        name: "cc",
+        symbol: "cc",
+        factor: 0.001
+      },
+
+      {
+        name: "리터",
+        symbol: "L",
+        factor: 1
+      },
+
+      {
+        name: "세제곱미터",
+        symbol: "m³",
+        factor: 1000
+      },
+
+      {
+        name: "세제곱인치",
+        symbol: "in³",
+        factor: 0.016387064
+      },
+
+      {
+        name: "세제곱피트",
+        symbol: "ft³",
+        factor: 28.316846592
+      },
+
+      {
+        name: "미국 갤런",
+        symbol: "US gal",
+        factor: 3.785411784
+      }
+
     ],
+
     defaultFrom: 2,
     defaultTo: 3
   },
 
 
   mass: {
+
     name: "질량",
+
     units: [
-      { name: "밀리그램", symbol: "mg", factor: 0.000001 },
-      { name: "그램", symbol: "g", factor: 0.001 },
-      { name: "킬로그램", symbol: "kg", factor: 1 },
-      { name: "톤", symbol: "t", factor: 1000 },
-      { name: "온스", symbol: "oz", factor: 0.028349523125 },
-      { name: "파운드", symbol: "lb", factor: 0.45359237 }
+
+      {
+        name: "밀리그램",
+        symbol: "mg",
+        factor: 0.000001
+      },
+
+      {
+        name: "그램",
+        symbol: "g",
+        factor: 0.001
+      },
+
+      {
+        name: "킬로그램",
+        symbol: "kg",
+        factor: 1
+      },
+
+      {
+        name: "톤",
+        symbol: "t",
+        factor: 1000
+      },
+
+      {
+        name: "온스",
+        symbol: "oz",
+        factor: 0.028349523125
+      },
+
+      {
+        name: "파운드",
+        symbol: "lb",
+        factor: 0.45359237
+      }
+
     ],
+
     defaultFrom: 2,
     defaultTo: 5
   },
 
 
   speed: {
+
     name: "속도",
+
     units: [
-      { name: "미터/초", symbol: "m/s", factor: 1 },
-      { name: "킬로미터/시", symbol: "km/h", factor: 1 / 3.6 },
-      { name: "마일/시", symbol: "mph", factor: 0.44704 },
-      { name: "노트", symbol: "knot", factor: 0.514444444444 }
+
+      {
+        name: "미터/초",
+        symbol: "m/s",
+        factor: 1
+      },
+
+      {
+        name: "킬로미터/시",
+        symbol: "km/h",
+        factor: 1 / 3.6
+      },
+
+      {
+        name: "마일/시",
+        symbol: "mph",
+        factor: 0.44704
+      },
+
+      {
+        name: "노트",
+        symbol: "knot",
+        factor: 0.514444444444
+      }
+
     ],
+
     defaultFrom: 0,
     defaultTo: 1
   },
 
 
   pressure: {
+
     name: "압력",
+
     units: [
-      { name: "파스칼", symbol: "Pa", factor: 1 },
-      { name: "킬로파스칼", symbol: "kPa", factor: 1000 },
-      { name: "메가파스칼", symbol: "MPa", factor: 1000000 },
-      { name: "bar", symbol: "bar", factor: 100000 },
-      { name: "표준대기압", symbol: "atm", factor: 101325 },
-      { name: "psi", symbol: "psi", factor: 6894.757293168 },
-      { name: "수은주 밀리미터", symbol: "mmHg", factor: 133.322387415 },
-      { name: "kgf/cm²", symbol: "kgf/cm²", factor: 98066.5 }
+
+      {
+        name: "파스칼",
+        symbol: "Pa",
+        factor: 1
+      },
+
+      {
+        name: "킬로파스칼",
+        symbol: "kPa",
+        factor: 1000
+      },
+
+      {
+        name: "메가파스칼",
+        symbol: "MPa",
+        factor: 1000000
+      },
+
+      {
+        name: "bar",
+        symbol: "bar",
+        factor: 100000
+      },
+
+      {
+        name: "표준대기압",
+        symbol: "atm",
+        factor: 101325
+      },
+
+      {
+        name: "psi",
+        symbol: "psi",
+        factor: 6894.757293168
+      },
+
+      {
+        name: "mmHg",
+        symbol: "mmHg",
+        factor: 133.322387415
+      },
+
+      {
+        name: "kgf/cm²",
+        symbol: "kgf/cm²",
+        factor: 98066.5
+      }
+
     ],
+
     defaultFrom: 2,
     defaultTo: 5
   },
 
 
   force: {
+
     name: "힘",
+
     units: [
-      { name: "뉴턴", symbol: "N", factor: 1 },
-      { name: "킬로뉴턴", symbol: "kN", factor: 1000 },
-      { name: "킬로그램힘", symbol: "kgf", factor: 9.80665 },
-      { name: "파운드힘", symbol: "lbf", factor: 4.4482216152605 }
+
+      {
+        name: "뉴턴",
+        symbol: "N",
+        factor: 1
+      },
+
+      {
+        name: "킬로뉴턴",
+        symbol: "kN",
+        factor: 1000
+      },
+
+      {
+        name: "킬로그램힘",
+        symbol: "kgf",
+        factor: 9.80665
+      },
+
+      {
+        name: "파운드힘",
+        symbol: "lbf",
+        factor: 4.4482216152605
+      }
+
     ],
+
     defaultFrom: 0,
     defaultTo: 2
   },
 
 
   torque: {
+
     name: "토크",
+
     units: [
-      { name: "뉴턴미터", symbol: "N·m", factor: 1 },
-      { name: "킬로그램힘 미터", symbol: "kgf·m", factor: 9.80665 },
-      { name: "파운드힘 피트", symbol: "lbf·ft", factor: 1.3558179483314 },
-      { name: "파운드힘 인치", symbol: "lbf·in", factor: 0.1129848290276 }
+
+      {
+        name: "뉴턴미터",
+        symbol: "N·m",
+        factor: 1
+      },
+
+      {
+        name: "킬로그램힘 미터",
+        symbol: "kgf·m",
+        factor: 9.80665
+      },
+
+      {
+        name: "파운드힘 피트",
+        symbol: "lbf·ft",
+        factor: 1.3558179483314
+      },
+
+      {
+        name: "파운드힘 인치",
+        symbol: "lbf·in",
+        factor: 0.1129848290276
+      }
+
     ],
+
     defaultFrom: 0,
     defaultTo: 1
   },
 
 
   energy: {
+
     name: "에너지",
+
     units: [
-      { name: "줄", symbol: "J", factor: 1 },
-      { name: "킬로줄", symbol: "kJ", factor: 1000 },
-      { name: "메가줄", symbol: "MJ", factor: 1000000 },
-      { name: "와트시", symbol: "Wh", factor: 3600 },
-      { name: "킬로와트시", symbol: "kWh", factor: 3600000 },
-      { name: "킬로칼로리", symbol: "kcal", factor: 4184 },
-      { name: "BTU", symbol: "BTU", factor: 1055.05585262 }
+
+      {
+        name: "줄",
+        symbol: "J",
+        factor: 1
+      },
+
+      {
+        name: "킬로줄",
+        symbol: "kJ",
+        factor: 1000
+      },
+
+      {
+        name: "메가줄",
+        symbol: "MJ",
+        factor: 1000000
+      },
+
+      {
+        name: "와트시",
+        symbol: "Wh",
+        factor: 3600
+      },
+
+      {
+        name: "킬로와트시",
+        symbol: "kWh",
+        factor: 3600000
+      },
+
+      {
+        name: "킬로칼로리",
+        symbol: "kcal",
+        factor: 4184
+      },
+
+      {
+        name: "BTU",
+        symbol: "BTU",
+        factor: 1055.05585262
+      }
+
     ],
+
     defaultFrom: 1,
     defaultTo: 4
   },
 
 
   power: {
+
     name: "동력",
+
     units: [
-      { name: "와트", symbol: "W", factor: 1 },
-      { name: "킬로와트", symbol: "kW", factor: 1000 },
-      { name: "메가와트", symbol: "MW", factor: 1000000 },
-      { name: "마력", symbol: "hp", factor: 745.699871582 },
-      { name: "미터마력", symbol: "PS", factor: 735.49875 }
+
+      {
+        name: "와트",
+        symbol: "W",
+        factor: 1
+      },
+
+      {
+        name: "킬로와트",
+        symbol: "kW",
+        factor: 1000
+      },
+
+      {
+        name: "메가와트",
+        symbol: "MW",
+        factor: 1000000
+      },
+
+      {
+        name: "마력",
+        symbol: "hp",
+        factor: 745.699871582
+      },
+
+      {
+        name: "미터마력",
+        symbol: "PS",
+        factor: 735.49875
+      }
+
     ],
+
     defaultFrom: 1,
     defaultTo: 4
   },
 
 
   angularSpeed: {
+
     name: "회전속도 / 각속도",
+
     units: [
+
       {
         name: "RPM",
         symbol: "rpm",
         factor: 2 * Math.PI / 60
       },
+
       {
         name: "라디안/초",
         symbol: "rad/s",
         factor: 1
       },
+
       {
         name: "회전/초",
         symbol: "rps",
         factor: 2 * Math.PI
       }
+
     ],
+
     defaultFrom: 0,
     defaultTo: 1
   },
 
 
   flow: {
+
     name: "체적유량",
+
     units: [
+
       {
         name: "세제곱미터/초",
         symbol: "m³/s",
         factor: 1
       },
+
       {
         name: "세제곱미터/시",
         symbol: "m³/h",
         factor: 1 / 3600
       },
+
       {
         name: "리터/초",
         symbol: "L/s",
         factor: 0.001
       },
+
       {
         name: "리터/분",
         symbol: "L/min",
         factor: 0.001 / 60
       },
-      {
-        name: "리터/시",
-        symbol: "L/h",
-        factor: 0.001 / 3600
-      },
+
       {
         name: "CFM",
         symbol: "ft³/min",
         factor: 0.028316846592 / 60
       }
+
     ],
+
     defaultFrom: 3,
     defaultTo: 1
   },
 
 
   temperature: {
+
     name: "온도",
+
     temperature: true,
 
     units: [
-      { name: "섭씨", symbol: "°C" },
-      { name: "켈빈", symbol: "K" },
-      { name: "화씨", symbol: "°F" },
-      { name: "랭킨", symbol: "°R" }
+
+      {
+        name: "섭씨",
+        symbol: "°C"
+      },
+
+      {
+        name: "켈빈",
+        symbol: "K"
+      },
+
+      {
+        name: "화씨",
+        symbol: "°F"
+      },
+
+      {
+        name: "랭킨",
+        symbol: "°R"
+      }
+
     ],
 
     defaultFrom: 0,
@@ -952,6 +1860,10 @@ const categories = {
 };
 
 
+
+/* =========================================================
+   HTML 요소
+========================================================= */
 
 const categorySelect =
   document.getElementById("category");
@@ -979,12 +1891,17 @@ const copyButton =
 
 
 
+/* =========================================================
+   단위 메뉴
+========================================================= */
+
 for (const key in categories) {
 
   const option =
     document.createElement("option");
 
-  option.value = key;
+  option.value =
+    key;
 
   option.textContent =
     categories[key].name;
@@ -998,31 +1915,39 @@ for (const key in categories) {
 function updateUnits() {
 
   const category =
-    categories[categorySelect.value];
+    categories[
+      categorySelect.value
+    ];
 
-  fromUnit.innerHTML = "";
-  toUnit.innerHTML = "";
+  fromUnit.innerHTML =
+    "";
+
+  toUnit.innerHTML =
+    "";
 
 
   category.units.forEach(
-    (unit, index) => {
+    (unit,index) => {
 
-      const option1 =
-        document.createElement("option");
+      const a =
+        document.createElement(
+          "option"
+        );
 
-      option1.value = index;
+      a.value =
+        index;
 
-      option1.textContent =
+      a.textContent =
         `${unit.name} (${unit.symbol})`;
 
 
-      const option2 =
-        option1.cloneNode(true);
+      const b =
+        a.cloneNode(true);
 
 
-      fromUnit.appendChild(option1);
+      fromUnit.appendChild(a);
 
-      toUnit.appendChild(option2);
+      toUnit.appendChild(b);
 
     }
   );
@@ -1034,12 +1959,15 @@ function updateUnits() {
   toUnit.value =
     category.defaultTo;
 
-
   convert();
 
 }
 
 
+
+/* =========================================================
+   일반 단위
+========================================================= */
 
 function normalConvert(
   value,
@@ -1047,92 +1975,134 @@ function normalConvert(
   to
 ) {
 
-  const baseValue =
-    value * from.factor;
-
-  return baseValue / to.factor;
+  return (
+    value *
+    from.factor /
+    to.factor
+  );
 
 }
 
 
 
+/* =========================================================
+   온도
+========================================================= */
+
 function temperatureConvert(
   value,
-  fromSymbol,
-  toSymbol
+  from,
+  to
 ) {
 
   let kelvin;
 
 
-  switch (fromSymbol) {
+  if (from === "°C") {
 
-    case "°C":
-      kelvin = value + 273.15;
-      break;
+    kelvin =
+      value + 273.15;
 
-    case "K":
-      kelvin = value;
-      break;
+  }
 
-    case "°F":
-      kelvin =
-        (value - 32) * 5 / 9
-        + 273.15;
-      break;
+  else if (
+    from === "K"
+  ) {
 
-    case "°R":
-      kelvin =
-        value * 5 / 9;
-      break;
+    kelvin =
+      value;
+
+  }
+
+  else if (
+    from === "°F"
+  ) {
+
+    kelvin =
+      (value - 32)
+      * 5 / 9
+      + 273.15;
+
+  }
+
+  else {
+
+    kelvin =
+      value * 5 / 9;
 
   }
 
 
-  switch (toSymbol) {
+  if (to === "°C") {
 
-    case "°C":
-      return kelvin - 273.15;
-
-    case "K":
-      return kelvin;
-
-    case "°F":
-      return (kelvin - 273.15)
-        * 9 / 5
-        + 32;
-
-    case "°R":
-      return kelvin * 9 / 5;
+    return (
+      kelvin - 273.15
+    );
 
   }
+
+
+  if (to === "K") {
+
+    return kelvin;
+
+  }
+
+
+  if (to === "°F") {
+
+    return (
+      (kelvin - 273.15)
+      * 9 / 5
+      + 32
+    );
+
+  }
+
+
+  return (
+    kelvin * 9 / 5
+  );
 
 }
 
 
 
-function formatNumber(number) {
+/* =========================================================
+   숫자 출력
+========================================================= */
 
-  if (!Number.isFinite(number)) {
+function formatNumber(
+  number
+) {
+
+  if (
+    !Number.isFinite(number)
+  ) {
+
     return "-";
+
   }
 
 
   if (number === 0) {
+
     return "0";
+
   }
 
 
-  const absolute =
+  const abs =
     Math.abs(number);
 
 
   if (
-    absolute >= 1e12 ||
-    absolute < 1e-7
+    abs >= 1e12 ||
+    abs < 1e-7
   ) {
 
-    return number.toExponential(8);
+    return number
+      .toExponential(8);
 
   }
 
@@ -1140,7 +2110,8 @@ function formatNumber(number) {
   return new Intl.NumberFormat(
     "ko-KR",
     {
-      maximumSignificantDigits: 12
+      maximumSignificantDigits:
+        12
     }
   ).format(number);
 
@@ -1148,15 +2119,24 @@ function formatNumber(number) {
 
 
 
+/* =========================================================
+   계산
+========================================================= */
+
 function convert() {
 
   const value =
-    parseFloat(inputValue.value);
+    parseFloat(
+      inputValue.value
+    );
 
 
-  if (Number.isNaN(value)) {
+  if (
+    Number.isNaN(value)
+  ) {
 
-    result.textContent = "-";
+    result.textContent =
+      "-";
 
     formula.textContent =
       "값을 입력하세요.";
@@ -1167,27 +2147,35 @@ function convert() {
 
 
   const category =
-    categories[categorySelect.value];
+    categories[
+      categorySelect.value
+    ];
 
 
   const from =
     category.units[
-      Number(fromUnit.value)
+      Number(
+        fromUnit.value
+      )
     ];
 
 
   const to =
     category.units[
-      Number(toUnit.value)
+      Number(
+        toUnit.value
+      )
     ];
 
 
-  let converted;
+  let answer;
 
 
-  if (category.temperature) {
+  if (
+    category.temperature
+  ) {
 
-    converted =
+    answer =
       temperatureConvert(
         value,
         from.symbol,
@@ -1198,7 +2186,7 @@ function convert() {
 
   else {
 
-    converted =
+    answer =
       normalConvert(
         value,
         from,
@@ -1209,7 +2197,7 @@ function convert() {
 
 
   const formatted =
-    formatNumber(converted);
+    formatNumber(answer);
 
 
   result.textContent =
@@ -1223,67 +2211,72 @@ function convert() {
 
 
 
-function swapUnits() {
+/* =========================================================
+   단위 교환
+========================================================= */
 
-  const previousFrom =
-    fromUnit.value;
+swapButton.addEventListener(
+  "click",
+  () => {
 
+    const temp =
+      fromUnit.value;
 
-  fromUnit.value =
-    toUnit.value;
+    fromUnit.value =
+      toUnit.value;
 
+    toUnit.value =
+      temp;
 
-  toUnit.value =
-    previousFrom;
-
-
-  convert();
-
-}
-
-
-
-async function copyResult() {
-
-  const text =
-    result.textContent;
-
-
-  if (text === "-") {
-    return;
-  }
-
-
-  try {
-
-    await navigator.clipboard
-      .writeText(text);
-
-
-    copyButton.textContent =
-      "복사 완료 ✓";
-
-
-    setTimeout(
-      () => {
-
-        copyButton.textContent =
-          "결과 복사";
-
-      },
-      1200
-    );
+    convert();
 
   }
+);
 
-  catch {
 
-    copyButton.textContent =
-      "복사 실패";
+
+/* =========================================================
+   복사
+========================================================= */
+
+copyButton.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      await navigator
+        .clipboard
+        .writeText(
+          result.textContent
+        );
+
+
+      copyButton.textContent =
+        "복사 완료 ✓";
+
+
+      setTimeout(
+        () => {
+
+          copyButton.textContent =
+            "결과 복사";
+
+        },
+        1000
+      );
+
+    }
+
+    catch {
+
+      copyButton.textContent =
+        "복사 실패";
+
+    }
 
   }
-
-}
+);
 
 
 
@@ -1292,18 +2285,15 @@ categorySelect.addEventListener(
   updateUnits
 );
 
-
 inputValue.addEventListener(
   "input",
   convert
 );
 
-
 fromUnit.addEventListener(
   "change",
   convert
 );
-
 
 toUnit.addEventListener(
   "change",
@@ -1311,28 +2301,151 @@ toUnit.addEventListener(
 );
 
 
-swapButton.addEventListener(
+
+/* =========================================================
+   테마 시스템
+========================================================= */
+
+const themes = [
+
+  {
+    className:
+      "minecraft",
+
+    display:
+      "MINECRAFT STYLE",
+
+    subtitle:
+      "BLOCK ENGINEERING TOOL"
+  },
+
+  {
+    className:
+      "overwatch",
+
+    display:
+      "OVERWATCH STYLE",
+
+    subtitle:
+      "TACTICAL UNIT SYSTEM"
+  },
+
+  {
+    className:
+      "starcraft",
+
+    display:
+      "STARCRAFT STYLE",
+
+    subtitle:
+      "INTERSTELLAR ENGINEERING SYSTEM"
+  }
+
+];
+
+
+const themeButton =
+  document.getElementById(
+    "themeButton"
+  );
+
+const themeName =
+  document.getElementById(
+    "themeName"
+  );
+
+const subtitle =
+  document.getElementById(
+    "subtitle"
+  );
+
+
+let currentTheme =
+  Number(
+    localStorage.getItem(
+      "unitConverterTheme"
+    )
+  );
+
+
+if (
+  !Number.isInteger(
+    currentTheme
+  ) ||
+  currentTheme < 0 ||
+  currentTheme >=
+    themes.length
+) {
+
+  currentTheme = 0;
+
+}
+
+
+
+/* 테마 적용 */
+
+function applyTheme() {
+
+  const theme =
+    themes[currentTheme];
+
+
+  document.body.className =
+    theme.className;
+
+
+  themeName.textContent =
+    theme.display;
+
+
+  subtitle.textContent =
+    theme.subtitle;
+
+
+  localStorage.setItem(
+    "unitConverterTheme",
+    currentTheme
+  );
+
+}
+
+
+/* 버튼 하나로 순환 */
+
+themeButton.addEventListener(
   "click",
-  swapUnits
+  () => {
+
+    currentTheme =
+      (
+        currentTheme + 1
+      )
+      %
+      themes.length;
+
+
+    applyTheme();
+
+  }
 );
 
 
-copyButton.addEventListener(
-  "click",
-  copyResult
-);
 
-
+/* =========================================================
+   시작
+========================================================= */
 
 categorySelect.value =
   "length";
 
 updateUnits();
 
+applyTheme();
+
 </script>
 
 </body>
 </html>
-
 </body>
 </html>
