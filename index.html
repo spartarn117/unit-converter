@@ -2,7 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#f7b7cc">
 
   <title>단위 변환기</title>
 
@@ -11,9 +17,16 @@
       box-sizing: border-box;
     }
 
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
     body {
       margin: 0;
+
       min-height: 100vh;
+      min-height: 100dvh;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -22,85 +35,162 @@
         Arial,
         sans-serif;
 
-      background: linear-gradient(
-        135deg,
-        #ffd6e5,
-        #f7b7cc
-      );
+      background:
+        linear-gradient(
+          135deg,
+          #ffdbe8 0%,
+          #f7b7cc 50%,
+          #f3a9c4 100%
+        );
 
       color: #333;
+
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
+
+
+    /* ==========================
+       상단
+    ========================== */
 
     header {
       text-align: center;
-      padding: 55px 20px 25px;
+
+      padding:
+        calc(42px + env(safe-area-inset-top))
+        20px
+        22px;
     }
 
     header h1 {
       margin: 0;
-      font-size: 38px;
+
+      font-size: clamp(30px, 6vw, 42px);
+
       color: #8f3657;
+
+      letter-spacing: -1px;
     }
 
     header p {
-      margin-top: 10px;
+      margin: 10px 0 0;
+
       color: #83556a;
+
       font-size: 15px;
+
+      line-height: 1.5;
     }
+
+
+    /* ==========================
+       전체 영역
+    ========================== */
 
     .container {
-      width: 92%;
-      max-width: 800px;
-      margin: 0 auto 60px;
+      width: min(92%, 800px);
+
+      margin: 0 auto;
+
+      padding-bottom:
+        calc(40px + env(safe-area-inset-bottom));
     }
 
+
+    /* ==========================
+       변환기 카드
+    ========================== */
+
     .converter {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 25px;
+      background:
+        rgba(255, 255, 255, 0.90);
+
+      border:
+        1px solid rgba(255, 255, 255, 0.7);
+
+      border-radius: 26px;
+
       padding: 30px;
 
       box-shadow:
-        0 15px 40px rgba(130, 60, 90, 0.15);
+        0 16px 45px
+        rgba(120, 45, 80, 0.16);
 
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+
+    /* ==========================
+       입력 영역
+    ========================== */
+
+    .section {
+      margin-bottom: 24px;
     }
 
     label {
       display: block;
-      font-size: 14px;
-      font-weight: 600;
+
       margin-bottom: 8px;
-      color: #6d4b59;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      color: #704b59;
     }
 
     select,
     input {
       width: 100%;
-      padding: 15px;
 
-      border: 1px solid #e8c4d0;
-      border-radius: 12px;
+      min-height: 52px;
 
-      background: white;
+      padding: 13px 14px;
 
-      font-size: 17px;
+      border:
+        1px solid #e8c4d0;
+
+      border-radius: 13px;
+
+      background: #fff;
+
       color: #333;
 
+      font-family: inherit;
+
+      /*
+      모바일에서 16px 미만이면
+      iPhone Safari가 자동 확대할 수 있음
+      */
+      font-size: 17px;
+
       outline: none;
-      transition: 0.2s;
+
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
     }
 
     select:focus,
     input:focus {
-      border-color: #db7397;
+      border-color: #d96e95;
 
       box-shadow:
-        0 0 0 3px rgba(219, 115, 151, 0.15);
+        0 0 0 4px
+        rgba(219, 115, 151, 0.14);
     }
 
-    .section {
-      margin-bottom: 23px;
+    input::placeholder {
+      color: #aaa;
     }
+
+
+    /* ==========================
+       두 단위 선택
+    ========================== */
 
     .unit-grid {
       display: grid;
@@ -110,104 +200,161 @@
         60px
         minmax(0, 1fr);
 
-      gap: 12px;
+      gap: 14px;
 
       align-items: end;
     }
 
     .swap-wrapper {
       display: flex;
+
       justify-content: center;
+
       align-items: center;
     }
 
     .swap-button {
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
 
       border: none;
+
       border-radius: 50%;
 
-      background: #dd789a;
-      color: white;
+      background: #da7498;
 
-      font-size: 22px;
+      color: #fff;
+
+      font-size: 23px;
+
+      font-weight: bold;
 
       cursor: pointer;
 
-      transition: 0.2s;
+      -webkit-tap-highlight-color:
+        transparent;
+
+      transition:
+        background 0.2s,
+        transform 0.2s;
     }
 
     .swap-button:hover {
       background: #c65c82;
-      transform: rotate(180deg);
     }
 
+    .swap-button:active {
+      transform: scale(0.92);
+    }
+
+
+    /* ==========================
+       결과
+    ========================== */
+
     .result-box {
-      margin-top: 28px;
+      margin-top: 30px;
 
-      padding: 25px 20px;
-
-      border-radius: 18px;
+      padding: 26px 18px;
 
       text-align: center;
 
-      background: linear-gradient(
-        135deg,
-        #fff0f5,
-        #ffe3ed
-      );
+      border:
+        1px solid #f0c7d5;
 
-      border: 1px solid #f0c7d5;
+      border-radius: 20px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #fff3f7,
+          #ffe1ec
+        );
     }
 
     .result-label {
-      font-size: 13px;
-      color: #946479;
       margin-bottom: 8px;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      color: #946479;
     }
 
     #result {
-      font-size: 30px;
-      font-weight: 700;
+      font-size:
+        clamp(27px, 6vw, 36px);
 
-      word-break: break-all;
+      font-weight: 800;
+
+      line-height: 1.25;
 
       color: #a83e65;
+
+      word-break: break-word;
     }
 
     #formula {
-      margin-top: 10px;
+      min-height: 20px;
+
+      margin-top: 12px;
+
       color: #876370;
+
       font-size: 14px;
+
+      line-height: 1.5;
+
+      word-break: break-word;
     }
 
     .copy-button {
+      min-height: 44px;
+
       margin-top: 18px;
 
-      padding: 10px 20px;
+      padding: 10px 24px;
 
-      border: 1px solid #e0a6bb;
-      border-radius: 10px;
+      border:
+        1px solid #e0a6bb;
 
-      background: white;
+      border-radius: 11px;
+
+      background: #fff;
+
       color: #a44b6c;
 
+      font-family: inherit;
+
+      font-size: 15px;
+
+      font-weight: 700;
+
       cursor: pointer;
+
+      -webkit-tap-highlight-color:
+        transparent;
     }
 
-    .copy-button:hover {
-      background: #fff7fa;
+    .copy-button:active {
+      transform: scale(0.97);
     }
+
+
+    /* ==========================
+       하단 참고값
+    ========================== */
 
     .tips {
-      margin-top: 20px;
+      margin-top: 18px;
 
-      background: rgba(255, 255, 255, 0.55);
+      padding: 18px 21px;
 
-      border-radius: 16px;
+      border-radius: 17px;
 
-      padding: 18px 22px;
+      background:
+        rgba(255, 255, 255, 0.58);
 
       color: #76515f;
 
@@ -216,45 +363,159 @@
       line-height: 1.8;
     }
 
+    .tips strong {
+      color: #934c69;
+    }
+
     footer {
       text-align: center;
-      padding: 20px;
+
+      padding: 24px 10px 5px;
 
       color: #946477;
 
-      font-size: 13px;
+      font-size: 12px;
     }
 
-    @media (max-width: 600px) {
 
-      header h1 {
-        font-size: 30px;
+    /* ==========================
+       모바일
+    ========================== */
+
+    @media (max-width: 640px) {
+
+      header {
+        padding-top:
+          calc(28px + env(safe-area-inset-top));
+
+        padding-bottom: 18px;
+      }
+
+      header p {
+        font-size: 14px;
+      }
+
+      .container {
+        width: calc(100% - 24px);
       }
 
       .converter {
-        padding: 22px;
+        padding: 20px 16px 18px;
+
+        border-radius: 21px;
       }
+
+      .section {
+        margin-bottom: 19px;
+      }
+
+      /*
+      PC:
+      [단위] ⇄ [단위]
+
+      모바일:
+      [단위]
+        ⇅
+      [단위]
+      */
 
       .unit-grid {
         grid-template-columns: 1fr;
+
+        gap: 12px;
       }
 
       .swap-wrapper {
-        margin: -4px 0;
+        height: 48px;
       }
 
       .swap-button {
+        width: 100%;
+
+        max-width: 130px;
+
+        height: 44px;
+
+        border-radius: 13px;
+
+        font-size: 21px;
+
         transform: rotate(90deg);
       }
 
-      .swap-button:hover {
-        transform: rotate(270deg);
+      .swap-button:active {
+        transform:
+          rotate(90deg)
+          scale(0.94);
+      }
+
+      .result-box {
+        margin-top: 23px;
+
+        padding: 24px 14px;
+      }
+
+      .copy-button {
+        width: 100%;
+
+        min-height: 48px;
+      }
+
+      .tips {
+        padding: 16px;
+
+        font-size: 13px;
+      }
+    }
+
+
+    /* 아주 작은 스마트폰 */
+
+    @media (max-width: 360px) {
+
+      .container {
+        width: calc(100% - 16px);
+      }
+
+      .converter {
+        padding:
+          18px 12px;
+      }
+
+      select,
+      input {
+        font-size: 16px;
       }
 
       #result {
         font-size: 25px;
       }
     }
+
+
+    /* 가로 화면 */
+
+    @media (
+      max-height: 500px
+    ) and (
+      orientation: landscape
+    ) {
+
+      header {
+        padding-top: 18px;
+
+        padding-bottom: 15px;
+      }
+
+      header h1 {
+        font-size: 28px;
+      }
+
+      header p {
+        display: none;
+      }
+    }
+
   </style>
 </head>
 
@@ -262,17 +523,20 @@
 <body>
 
 <header>
+
   <h1>단위 변환기</h1>
 
   <p>
     자주 사용하거나 헷갈리는 단위를 빠르게 변환하세요.
   </p>
+
 </header>
 
 
 <main class="container">
 
   <div class="converter">
+
 
     <div class="section">
 
@@ -296,6 +560,8 @@
         id="inputValue"
         value="1"
         step="any"
+        inputmode="decimal"
+        autocomplete="off"
         placeholder="숫자를 입력하세요"
       >
 
@@ -321,7 +587,7 @@
           class="swap-button"
           id="swapButton"
           type="button"
-          title="단위 서로 바꾸기"
+          aria-label="두 단위 서로 바꾸기"
         >
           ⇄
         </button>
@@ -369,23 +635,34 @@
 
   <div class="tips">
 
-    <strong>자주 쓰는 변환</strong><br>
+    <strong>자주 쓰는 변환</strong>
+    <br>
 
-    1 MPa ≈ 145.038 psi<br>
-    1 m/s = 3.6 km/h<br>
-    1 kgf = 9.80665 N<br>
-    1 kgf·m = 9.80665 N·m<br>
-    1 평 ≈ 3.3058 m²<br>
+    1 MPa ≈ 145.038 psi
+    <br>
+
+    1 m/s = 3.6 km/h
+    <br>
+
+    1 kgf = 9.80665 N
+    <br>
+
+    1 kgf·m = 9.80665 N·m
+    <br>
+
+    1 평 ≈ 3.3058 m²
+    <br>
+
     1 PS ≈ 735.499 W
 
   </div>
 
+
+  <footer>
+    Unit Converter
+  </footer>
+
 </main>
-
-
-<footer>
-  Unit Converter
-</footer>
 
 
 <script>
@@ -542,12 +819,24 @@ const categories = {
   },
 
 
-  frequency: {
+  angularSpeed: {
     name: "회전속도 / 각속도",
     units: [
-      { name: "RPM", symbol: "rpm", factor: 2 * Math.PI / 60 },
-      { name: "라디안/초", symbol: "rad/s", factor: 1 },
-      { name: "회전/초", symbol: "rps", factor: 2 * Math.PI }
+      {
+        name: "RPM",
+        symbol: "rpm",
+        factor: 2 * Math.PI / 60
+      },
+      {
+        name: "라디안/초",
+        symbol: "rad/s",
+        factor: 1
+      },
+      {
+        name: "회전/초",
+        symbol: "rps",
+        factor: 2 * Math.PI
+      }
     ],
     defaultFrom: 0,
     defaultTo: 1
@@ -557,12 +846,36 @@ const categories = {
   flow: {
     name: "체적유량",
     units: [
-      { name: "세제곱미터/초", symbol: "m³/s", factor: 1 },
-      { name: "세제곱미터/시", symbol: "m³/h", factor: 1 / 3600 },
-      { name: "리터/초", symbol: "L/s", factor: 0.001 },
-      { name: "리터/분", symbol: "L/min", factor: 0.001 / 60 },
-      { name: "리터/시", symbol: "L/h", factor: 0.001 / 3600 },
-      { name: "CFM", symbol: "ft³/min", factor: 0.028316846592 / 60 }
+      {
+        name: "세제곱미터/초",
+        symbol: "m³/s",
+        factor: 1
+      },
+      {
+        name: "세제곱미터/시",
+        symbol: "m³/h",
+        factor: 1 / 3600
+      },
+      {
+        name: "리터/초",
+        symbol: "L/s",
+        factor: 0.001
+      },
+      {
+        name: "리터/분",
+        symbol: "L/min",
+        factor: 0.001 / 60
+      },
+      {
+        name: "리터/시",
+        symbol: "L/h",
+        factor: 0.001 / 3600
+      },
+      {
+        name: "CFM",
+        symbol: "ft³/min",
+        factor: 0.028316846592 / 60
+      }
     ],
     defaultFrom: 3,
     defaultTo: 1
@@ -572,12 +885,14 @@ const categories = {
   temperature: {
     name: "온도",
     temperature: true,
+
     units: [
       { name: "섭씨", symbol: "°C" },
       { name: "켈빈", symbol: "K" },
       { name: "화씨", symbol: "°F" },
       { name: "랭킨", symbol: "°R" }
     ],
+
     defaultFrom: 0,
     defaultTo: 2
   }
@@ -612,13 +927,17 @@ const copyButton =
 
 
 
+/* 카테고리 생성 */
+
 for (const key in categories) {
 
   const option =
     document.createElement("option");
 
   option.value = key;
-  option.textContent = categories[key].name;
+
+  option.textContent =
+    categories[key].name;
 
   categorySelect.appendChild(option);
 
@@ -626,34 +945,40 @@ for (const key in categories) {
 
 
 
+/* 단위 목록 갱신 */
+
 function updateUnits() {
 
   const category =
     categories[categorySelect.value];
 
   fromUnit.innerHTML = "";
+
   toUnit.innerHTML = "";
 
 
-  category.units.forEach((unit, index) => {
+  category.units.forEach(
+    (unit, index) => {
 
-    const option1 =
-      document.createElement("option");
+      const option1 =
+        document.createElement("option");
 
-    option1.value = index;
+      option1.value = index;
 
-    option1.textContent =
-      `${unit.name} (${unit.symbol})`;
-
-
-    const option2 =
-      option1.cloneNode(true);
+      option1.textContent =
+        `${unit.name} (${unit.symbol})`;
 
 
-    fromUnit.appendChild(option1);
-    toUnit.appendChild(option2);
+      const option2 =
+        option1.cloneNode(true);
 
-  });
+
+      fromUnit.appendChild(option1);
+
+      toUnit.appendChild(option2);
+
+    }
+  );
 
 
   fromUnit.value =
@@ -668,6 +993,8 @@ function updateUnits() {
 }
 
 
+
+/* 일반 단위 변환 */
 
 function normalConvert(
   value,
@@ -684,6 +1011,8 @@ function normalConvert(
 
 
 
+/* 온도 */
+
 function temperatureConvert(
   value,
   fromSymbol,
@@ -696,21 +1025,34 @@ function temperatureConvert(
   switch (fromSymbol) {
 
     case "°C":
-      kelvin = value + 273.15;
+
+      kelvin =
+        value + 273.15;
+
       break;
+
 
     case "K":
+
       kelvin = value;
+
       break;
+
 
     case "°F":
+
       kelvin =
-        (value - 32) * 5 / 9 + 273.15;
+        (value - 32) * 5 / 9
+        + 273.15;
+
       break;
 
+
     case "°R":
+
       kelvin =
         value * 5 / 9;
+
       break;
 
   }
@@ -719,16 +1061,24 @@ function temperatureConvert(
   switch (toSymbol) {
 
     case "°C":
+
       return kelvin - 273.15;
 
+
     case "K":
+
       return kelvin;
 
+
     case "°F":
-      return
-        (kelvin - 273.15) * 9 / 5 + 32;
+
+      return (kelvin - 273.15)
+        * 9 / 5
+        + 32;
+
 
     case "°R":
+
       return kelvin * 9 / 5;
 
   }
@@ -737,15 +1087,21 @@ function temperatureConvert(
 
 
 
+/* 숫자 표시 */
+
 function formatNumber(number) {
 
   if (!Number.isFinite(number)) {
+
     return "-";
+
   }
 
 
   if (number === 0) {
+
     return "0";
+
   }
 
 
@@ -774,6 +1130,8 @@ function formatNumber(number) {
 
 
 
+/* 계산 */
+
 function convert() {
 
   const value =
@@ -793,7 +1151,9 @@ function convert() {
 
 
   const category =
-    categories[categorySelect.value];
+    categories[
+      categorySelect.value
+    ];
 
 
   const from =
@@ -849,13 +1209,17 @@ function convert() {
 
 
 
+/* 서로 교환 */
+
 function swapUnits() {
 
   const previousFrom =
     fromUnit.value;
 
+
   fromUnit.value =
     toUnit.value;
+
 
   toUnit.value =
     previousFrom;
@@ -867,6 +1231,8 @@ function swapUnits() {
 
 
 
+/* 결과 복사 */
+
 async function copyResult() {
 
   const text =
@@ -874,24 +1240,31 @@ async function copyResult() {
 
 
   if (text === "-") {
+
     return;
+
   }
 
 
   try {
 
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard
+      .writeText(text);
+
 
     copyButton.textContent =
       "복사 완료 ✓";
 
 
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      copyButton.textContent =
-        "결과 복사";
+        copyButton.textContent =
+          "결과 복사";
 
-    }, 1200);
+      },
+      1200
+    );
 
   }
 
@@ -905,6 +1278,8 @@ async function copyResult() {
 }
 
 
+
+/* 이벤트 */
 
 categorySelect.addEventListener(
   "change",
@@ -942,6 +1317,8 @@ copyButton.addEventListener(
 );
 
 
+
+/* 처음 실행 */
 
 categorySelect.value =
   "length";
