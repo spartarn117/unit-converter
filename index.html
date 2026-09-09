@@ -8,9 +8,9 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#f7b7cc">
+  <meta name="theme-color" content="#5b8731">
 
-  <title>단위 변환기</title>
+  <title>Block Unit Converter</title>
 
   <style>
     * {
@@ -23,111 +23,134 @@
 
     body {
       margin: 0;
-
       min-height: 100vh;
       min-height: 100dvh;
 
       font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        "Noto Sans KR",
-        Arial,
-        sans-serif;
+        "Courier New",
+        Consolas,
+        monospace;
 
+      color: #222;
+
+      /*
+        잔디 + 흙 느낌의 CSS 배경
+      */
       background:
         linear-gradient(
-          135deg,
-          #ffdbe8 0%,
-          #f7b7cc 50%,
-          #f3a9c4 100%
+          to bottom,
+          #7ab64a 0,
+          #7ab64a 55px,
+          #628f3c 55px,
+          #628f3c 80px,
+          #795438 80px,
+          #60402d 100%
         );
 
-      color: #333;
+      background-attachment: fixed;
 
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
 
 
-    /* ==========================
-       상단
-    ========================== */
+    /* =========================
+       상단 타이틀
+    ========================= */
 
     header {
       text-align: center;
 
       padding:
-        calc(42px + env(safe-area-inset-top))
-        20px
-        22px;
+        calc(38px + env(safe-area-inset-top))
+        16px
+        25px;
     }
 
-    header h1 {
+    h1 {
       margin: 0;
 
-      font-size: clamp(30px, 6vw, 42px);
+      color: #fff;
 
-      color: #8f3657;
+      font-size: clamp(28px, 6vw, 46px);
 
-      letter-spacing: -1px;
+      font-weight: 900;
+
+      letter-spacing: 1px;
+
+      text-shadow:
+        3px 3px 0 #222,
+        -2px 0 0 #222,
+        0 -2px 0 #222,
+        2px 0 0 #222,
+        0 2px 0 #222,
+        5px 5px 0 rgba(0,0,0,0.35);
     }
 
-    header p {
-      margin: 10px 0 0;
+    .subtitle {
+      display: inline-block;
 
-      color: #83556a;
+      margin-top: 15px;
+      padding: 7px 12px;
 
-      font-size: 15px;
+      background: rgba(0, 0, 0, 0.55);
 
-      line-height: 1.5;
+      color: #f3f3f3;
+
+      border: 2px solid #222;
+
+      font-size: 13px;
+
+      box-shadow:
+        3px 3px 0 rgba(0,0,0,0.4);
     }
 
 
-    /* ==========================
+    /* =========================
        전체 영역
-    ========================== */
+    ========================= */
 
     .container {
-      width: min(92%, 800px);
+      width: min(94%, 820px);
 
       margin: 0 auto;
 
       padding-bottom:
-        calc(40px + env(safe-area-inset-bottom));
+        calc(45px + env(safe-area-inset-bottom));
     }
 
 
-    /* ==========================
-       변환기 카드
-    ========================== */
+    /* =========================
+       메인 블록
+    ========================= */
 
     .converter {
+      padding: 25px;
+
       background:
-        rgba(255, 255, 255, 0.90);
+        linear-gradient(
+          135deg,
+          #c6c6c6,
+          #a9a9a9
+        );
 
       border:
-        1px solid rgba(255, 255, 255, 0.7);
+        4px solid #222;
 
-      border-radius: 26px;
-
-      padding: 30px;
+      border-top-color: #eee;
+      border-left-color: #eee;
 
       box-shadow:
-        0 16px 45px
-        rgba(120, 45, 80, 0.16);
-
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+        7px 7px 0 rgba(0, 0, 0, 0.55);
     }
 
 
-    /* ==========================
-       입력 영역
-    ========================== */
+    /* =========================
+       섹션 제목
+    ========================= */
 
     .section {
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     label {
@@ -135,12 +158,20 @@
 
       margin-bottom: 8px;
 
+      font-weight: 900;
+
       font-size: 14px;
 
-      font-weight: 700;
+      color: #252525;
 
-      color: #704b59;
+      text-shadow:
+        1px 1px 0 #eee;
     }
+
+
+    /* =========================
+       입력창 / 선택창
+    ========================= */
 
     select,
     input {
@@ -148,39 +179,39 @@
 
       min-height: 52px;
 
-      padding: 13px 14px;
+      padding: 12px 13px;
 
-      border:
-        1px solid #e8c4d0;
+      font-family:
+        "Courier New",
+        Consolas,
+        monospace;
 
-      border-radius: 13px;
-
-      background: #fff;
-
-      color: #333;
-
-      font-family: inherit;
-
-      /*
-      모바일에서 16px 미만이면
-      iPhone Safari가 자동 확대할 수 있음
-      */
       font-size: 17px;
 
-      outline: none;
+      font-weight: bold;
 
-      transition:
-        border-color 0.2s,
-        box-shadow 0.2s;
+      color: #fff;
+
+      background: #222;
+
+      border: 4px solid #555;
+
+      border-top-color: #111;
+      border-left-color: #111;
+      border-right-color: #aaa;
+      border-bottom-color: #aaa;
+
+      border-radius: 0;
+
+      outline: none;
     }
 
     select:focus,
     input:focus {
-      border-color: #d96e95;
+      border-color: #a8e063;
 
       box-shadow:
-        0 0 0 4px
-        rgba(219, 115, 151, 0.14);
+        0 0 0 3px rgba(168, 224, 99, 0.35);
     }
 
     input::placeholder {
@@ -188,111 +219,134 @@
     }
 
 
-    /* ==========================
-       두 단위 선택
-    ========================== */
+    /* =========================
+       단위 선택 영역
+    ========================= */
 
     .unit-grid {
       display: grid;
 
       grid-template-columns:
         minmax(0, 1fr)
-        60px
+        70px
         minmax(0, 1fr);
 
-      gap: 14px;
+      gap: 12px;
 
       align-items: end;
     }
 
     .swap-wrapper {
       display: flex;
-
       justify-content: center;
-
       align-items: center;
     }
 
-    .swap-button {
-      width: 50px;
-      height: 50px;
 
-      border: none;
+    /* =========================
+       마인크래프트 버튼 느낌
+    ========================= */
 
-      border-radius: 50%;
+    .mc-button {
+      font-family:
+        "Courier New",
+        Consolas,
+        monospace;
 
-      background: #da7498;
-
-      color: #fff;
-
-      font-size: 23px;
-
-      font-weight: bold;
+      font-weight: 900;
 
       cursor: pointer;
 
+      border: 4px solid;
+
+      border-top-color: #ddd;
+      border-left-color: #ddd;
+      border-right-color: #333;
+      border-bottom-color: #333;
+
+      background: #777;
+
+      color: white;
+
+      text-shadow:
+        2px 2px 0 #222;
+
+      box-shadow:
+        3px 3px 0 rgba(0,0,0,0.45);
+
+      border-radius: 0;
+
       -webkit-tap-highlight-color:
         transparent;
-
-      transition:
-        background 0.2s,
-        transform 0.2s;
     }
 
-    .swap-button:hover {
-      background: #c65c82;
+    .mc-button:hover {
+      background: #8a8a8a;
     }
 
-    .swap-button:active {
-      transform: scale(0.92);
+    .mc-button:active {
+      transform: translate(2px, 2px);
+
+      box-shadow:
+        1px 1px 0 rgba(0,0,0,0.45);
     }
 
 
-    /* ==========================
-       결과
-    ========================== */
+    .swap-button {
+      width: 54px;
+      height: 54px;
+
+      font-size: 24px;
+    }
+
+
+    /* =========================
+       결과창
+    ========================= */
 
     .result-box {
-      margin-top: 30px;
+      margin-top: 28px;
 
-      padding: 26px 18px;
+      padding: 24px 18px;
 
       text-align: center;
 
-      border:
-        1px solid #f0c7d5;
+      background: #1b1b1b;
 
-      border-radius: 20px;
+      border: 5px solid;
 
-      background:
-        linear-gradient(
-          135deg,
-          #fff3f7,
-          #ffe1ec
-        );
+      border-top-color: #111;
+      border-left-color: #111;
+      border-right-color: #777;
+      border-bottom-color: #777;
+
+      color: white;
     }
 
     .result-label {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+
+      color: #aaa;
 
       font-size: 13px;
 
-      font-weight: 700;
-
-      color: #946479;
+      font-weight: bold;
     }
 
     #result {
+      color: #55ff55;
+
       font-size:
-        clamp(27px, 6vw, 36px);
+        clamp(27px, 6vw, 38px);
 
-      font-weight: 800;
+      line-height: 1.3;
 
-      line-height: 1.25;
-
-      color: #a83e65;
+      font-weight: 900;
 
       word-break: break-word;
+
+      text-shadow:
+        2px 2px 0 #154515;
     }
 
     #formula {
@@ -300,7 +354,7 @@
 
       margin-top: 12px;
 
-      color: #876370;
+      color: #e0e0e0;
 
       font-size: 14px;
 
@@ -310,119 +364,135 @@
     }
 
     .copy-button {
-      min-height: 44px;
+      min-height: 46px;
 
-      margin-top: 18px;
+      margin-top: 20px;
 
-      padding: 10px 24px;
+      padding: 9px 22px;
 
-      border:
-        1px solid #e0a6bb;
+      font-size: 14px;
+    }
 
-      border-radius: 11px;
 
-      background: #fff;
+    /* =========================
+       인벤토리 느낌 참고 영역
+    ========================= */
 
-      color: #a44b6c;
+    .tips {
+      margin-top: 25px;
 
-      font-family: inherit;
+      padding: 20px;
+
+      background: #c6c6c6;
+
+      border: 4px solid #222;
+
+      border-top-color: #eee;
+      border-left-color: #eee;
+
+      box-shadow:
+        6px 6px 0 rgba(0,0,0,0.45);
+    }
+
+    .tips-title {
+      margin-bottom: 13px;
 
       font-size: 15px;
 
-      font-weight: 700;
+      font-weight: 900;
 
-      cursor: pointer;
-
-      -webkit-tap-highlight-color:
-        transparent;
+      color: #333;
     }
 
-    .copy-button:active {
-      transform: scale(0.97);
+    .inventory {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 7px;
+    }
+
+    .slot {
+      min-height: 70px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 8px;
+
+      color: #222;
+
+      font-size: 12px;
+
+      font-weight: bold;
+
+      background: #8b8b8b;
+
+      border: 4px solid;
+
+      border-top-color: #373737;
+      border-left-color: #373737;
+      border-right-color: #fff;
+      border-bottom-color: #fff;
     }
 
 
-    /* ==========================
-       하단 참고값
-    ========================== */
-
-    .tips {
-      margin-top: 18px;
-
-      padding: 18px 21px;
-
-      border-radius: 17px;
-
-      background:
-        rgba(255, 255, 255, 0.58);
-
-      color: #76515f;
-
-      font-size: 14px;
-
-      line-height: 1.8;
-    }
-
-    .tips strong {
-      color: #934c69;
-    }
+    /* =========================
+       바닥
+    ========================= */
 
     footer {
       text-align: center;
 
-      padding: 24px 10px 5px;
+      padding: 28px 10px 5px;
 
-      color: #946477;
+      color: white;
 
-      font-size: 12px;
+      font-size: 11px;
+
+      font-weight: bold;
+
+      text-shadow:
+        2px 2px 0 #222;
     }
 
 
-    /* ==========================
+    /* =========================
        모바일
-    ========================== */
+    ========================= */
 
     @media (max-width: 640px) {
 
       header {
         padding-top:
-          calc(28px + env(safe-area-inset-top));
+          calc(25px + env(safe-area-inset-top));
 
         padding-bottom: 18px;
       }
 
-      header p {
-        font-size: 14px;
-      }
-
       .container {
-        width: calc(100% - 24px);
+        width: calc(100% - 20px);
       }
 
       .converter {
-        padding: 20px 16px 18px;
+        padding: 18px 13px;
 
-        border-radius: 21px;
+        border-width: 3px;
+
+        box-shadow:
+          5px 5px 0 rgba(0,0,0,0.5);
       }
-
-      .section {
-        margin-bottom: 19px;
-      }
-
-      /*
-      PC:
-      [단위] ⇄ [단위]
-
-      모바일:
-      [단위]
-        ⇅
-      [단위]
-      */
 
       .unit-grid {
         grid-template-columns: 1fr;
 
-        gap: 12px;
+        gap: 11px;
       }
 
       .swap-wrapper {
@@ -432,54 +502,38 @@
       .swap-button {
         width: 100%;
 
-        max-width: 130px;
+        max-width: 150px;
 
         height: 44px;
-
-        border-radius: 13px;
-
-        font-size: 21px;
-
-        transform: rotate(90deg);
-      }
-
-      .swap-button:active {
-        transform:
-          rotate(90deg)
-          scale(0.94);
       }
 
       .result-box {
-        margin-top: 23px;
+        margin-top: 22px;
 
-        padding: 24px 14px;
+        padding: 22px 11px;
       }
 
       .copy-button {
         width: 100%;
 
-        min-height: 48px;
+        min-height: 49px;
       }
 
-      .tips {
-        padding: 16px;
+      .inventory {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
 
-        font-size: 13px;
+      .slot {
+        min-height: 65px;
       }
     }
 
 
-    /* 아주 작은 스마트폰 */
-
     @media (max-width: 360px) {
 
       .container {
-        width: calc(100% - 16px);
-      }
-
-      .converter {
-        padding:
-          18px 12px;
+        width: calc(100% - 12px);
       }
 
       select,
@@ -487,32 +541,12 @@
         font-size: 16px;
       }
 
-      #result {
-        font-size: 25px;
-      }
-    }
-
-
-    /* 가로 화면 */
-
-    @media (
-      max-height: 500px
-    ) and (
-      orientation: landscape
-    ) {
-
-      header {
-        padding-top: 18px;
-
-        padding-bottom: 15px;
+      .converter {
+        padding: 15px 10px;
       }
 
-      header h1 {
-        font-size: 28px;
-      }
-
-      header p {
-        display: none;
+      .inventory {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -524,11 +558,11 @@
 
 <header>
 
-  <h1>단위 변환기</h1>
+  <h1>UNIT CONVERTER</h1>
 
-  <p>
-    자주 사용하거나 헷갈리는 단위를 빠르게 변환하세요.
-  </p>
+  <div class="subtitle">
+    BLOCK ENGINEERING TOOL
+  </div>
 
 </header>
 
@@ -541,7 +575,7 @@
     <div class="section">
 
       <label for="category">
-        변환 종류
+        ▶ 변환 종류
       </label>
 
       <select id="category"></select>
@@ -552,7 +586,7 @@
     <div class="section">
 
       <label for="inputValue">
-        변환할 값
+        ▶ 변환할 값
       </label>
 
       <input
@@ -573,7 +607,7 @@
       <div>
 
         <label for="fromUnit">
-          원래 단위
+          ▶ 원래 단위
         </label>
 
         <select id="fromUnit"></select>
@@ -584,10 +618,10 @@
       <div class="swap-wrapper">
 
         <button
-          class="swap-button"
+          class="swap-button mc-button"
           id="swapButton"
           type="button"
-          aria-label="두 단위 서로 바꾸기"
+          aria-label="단위 서로 바꾸기"
         >
           ⇄
         </button>
@@ -598,7 +632,7 @@
       <div>
 
         <label for="toUnit">
-          변환 단위
+          ▶ 변환 단위
         </label>
 
         <select id="toUnit"></select>
@@ -611,7 +645,7 @@
     <div class="result-box">
 
       <div class="result-label">
-        변환 결과
+        [ 변환 결과 ]
       </div>
 
       <div id="result">
@@ -621,7 +655,7 @@
       <div id="formula"></div>
 
       <button
-        class="copy-button"
+        class="copy-button mc-button"
         id="copyButton"
         type="button"
       >
@@ -635,31 +669,49 @@
 
   <div class="tips">
 
-    <strong>자주 쓰는 변환</strong>
-    <br>
+    <div class="tips-title">
+      자주 쓰는 단위
+    </div>
 
-    1 MPa ≈ 145.038 psi
-    <br>
+    <div class="inventory">
 
-    1 m/s = 3.6 km/h
-    <br>
+      <div class="slot">
+        1 MPa<br>
+        ≈ 145.038 psi
+      </div>
 
-    1 kgf = 9.80665 N
-    <br>
+      <div class="slot">
+        1 m/s<br>
+        = 3.6 km/h
+      </div>
 
-    1 kgf·m = 9.80665 N·m
-    <br>
+      <div class="slot">
+        1 kgf<br>
+        = 9.80665 N
+      </div>
 
-    1 평 ≈ 3.3058 m²
-    <br>
+      <div class="slot">
+        1 kgf·m<br>
+        = 9.80665 N·m
+      </div>
 
-    1 PS ≈ 735.499 W
+      <div class="slot">
+        1 평<br>
+        ≈ 3.3058 m²
+      </div>
+
+      <div class="slot">
+        1 PS<br>
+        ≈ 735.499 W
+      </div>
+
+    </div>
 
   </div>
 
 
   <footer>
-    Unit Converter
+    BLOCK UNIT CONVERTER
   </footer>
 
 </main>
@@ -927,8 +979,6 @@ const copyButton =
 
 
 
-/* 카테고리 생성 */
-
 for (const key in categories) {
 
   const option =
@@ -945,15 +995,12 @@ for (const key in categories) {
 
 
 
-/* 단위 목록 갱신 */
-
 function updateUnits() {
 
   const category =
     categories[categorySelect.value];
 
   fromUnit.innerHTML = "";
-
   toUnit.innerHTML = "";
 
 
@@ -994,8 +1041,6 @@ function updateUnits() {
 
 
 
-/* 일반 단위 변환 */
-
 function normalConvert(
   value,
   from,
@@ -1011,8 +1056,6 @@ function normalConvert(
 
 
 
-/* 온도 */
-
 function temperatureConvert(
   value,
   fromSymbol,
@@ -1025,34 +1068,22 @@ function temperatureConvert(
   switch (fromSymbol) {
 
     case "°C":
-
-      kelvin =
-        value + 273.15;
-
+      kelvin = value + 273.15;
       break;
-
 
     case "K":
-
       kelvin = value;
-
       break;
 
-
     case "°F":
-
       kelvin =
         (value - 32) * 5 / 9
         + 273.15;
-
       break;
 
-
     case "°R":
-
       kelvin =
         value * 5 / 9;
-
       break;
 
   }
@@ -1061,24 +1092,17 @@ function temperatureConvert(
   switch (toSymbol) {
 
     case "°C":
-
       return kelvin - 273.15;
 
-
     case "K":
-
       return kelvin;
 
-
     case "°F":
-
       return (kelvin - 273.15)
         * 9 / 5
         + 32;
 
-
     case "°R":
-
       return kelvin * 9 / 5;
 
   }
@@ -1087,21 +1111,15 @@ function temperatureConvert(
 
 
 
-/* 숫자 표시 */
-
 function formatNumber(number) {
 
   if (!Number.isFinite(number)) {
-
     return "-";
-
   }
 
 
   if (number === 0) {
-
     return "0";
-
   }
 
 
@@ -1130,8 +1148,6 @@ function formatNumber(number) {
 
 
 
-/* 계산 */
-
 function convert() {
 
   const value =
@@ -1151,9 +1167,7 @@ function convert() {
 
 
   const category =
-    categories[
-      categorySelect.value
-    ];
+    categories[categorySelect.value];
 
 
   const from =
@@ -1209,8 +1223,6 @@ function convert() {
 
 
 
-/* 서로 교환 */
-
 function swapUnits() {
 
   const previousFrom =
@@ -1231,8 +1243,6 @@ function swapUnits() {
 
 
 
-/* 결과 복사 */
-
 async function copyResult() {
 
   const text =
@@ -1240,9 +1250,7 @@ async function copyResult() {
 
 
   if (text === "-") {
-
     return;
-
   }
 
 
@@ -1278,8 +1286,6 @@ async function copyResult() {
 }
 
 
-
-/* 이벤트 */
 
 categorySelect.addEventListener(
   "change",
@@ -1318,14 +1324,15 @@ copyButton.addEventListener(
 
 
 
-/* 처음 실행 */
-
 categorySelect.value =
   "length";
 
 updateUnits();
 
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
